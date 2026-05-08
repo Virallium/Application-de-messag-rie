@@ -182,11 +182,10 @@ header nav .div a p {
 .chat {
     flex: 1;
     display: flex;
-    flex-direction: column;
-    background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); /* Fond style WhatsApp */
+    flex-direction: column; /* Fond style WhatsApp */
     background-size: cover;
-    background-blend-mode: overlay;
-    background-color: #f0f2f5;
+    position: relative;
+    background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
 }
 
 .chat .header {
@@ -257,4 +256,41 @@ header nav .div a p {
     0% { opacity: 1; }
     80% { opacity: 1; }
     100% { opacity: 0; visibility: hidden; }
+}
+
+form{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 1rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 2rem;
+    background: var(--bg-light);
+}
+form input{
+  background: transparent;
+  border: 2px solid var(--secondary-color);
+  box-shadow: var(--shadow);
+}
+form button{
+    padding: .5rem;
+    background: var(--secondary-color);
+}
+.message{
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+}
+.boxsms{
+    padding: 1rem;
+    border-top-left-radius: 2rem;
+    border-top-right-radius: 2rem;
+    border-bottom-right-radius: 4rem;
+    border-bottom-left-radius: 2rem;
+    background: var(--primary-color);
+    width: 100%;
+    max-width: 400px;
 }

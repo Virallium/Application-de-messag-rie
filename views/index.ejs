@@ -77,14 +77,43 @@
                     </div>
                     <a href="" class="telephone"><i class="fa-solid fa-phone-flip"></i></a>
                 </div>
-                <div class="message"></div>
-                <form method="post">
-                    <input type="text">
+                <div class="message" id="message">
+                    
+                </div>
+                <form action="" method="post" id="formEnvoy">
+                    <input type="text" placeholder="Ecrire" required id="Message">
                     <button type="submit">Envoyer</button>
                 </form>
             </div>
         </section>
     </main>
-    
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const form = document.querySelector('#formEnvoy');
+        const messageInput = document.getElementById('Message');
+        const bodychat = document.getElementById('message');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if ( messageInput.value !== "") {
+                const data = {
+                    message: messageInput.value,
+                    date:new Date().toLocaleDateString()
+                };
+                socket.emit('chat', data);
+                messageInput.value = "";
+                messageInput.focus()
+            }
+        });
+        
+        socket.on('chat', (data) => {
+            const p = document.createElement('p');
+            p.classList.add('boxsms')
+            p.innerHTML = `<span><b>${data.date}</b>: ${data.message}</span>`;
+            bodychat.appendChild(p);
+            bodychat.scrollTop = bodychat.scrollHeight;
+        });
+    </script>
  <%-include('partials/footer')%>
  

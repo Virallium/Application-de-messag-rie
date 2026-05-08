@@ -10,6 +10,12 @@ app.set('view engine','ejs')
 app.use(express.static('public'))
 app.use(express.urlencoded({extended:true}))
 
+io.on('connection',(socket)=>{
+    console.log("Un utilisateur s'est conncecté ")
+    socket.on('chat',(data)=>{
+        io.emit('chat',data)
+    })
+})
 app.get('/register',(req,res)=>{
     res.render('register',{
         photo:'photo',
@@ -17,7 +23,6 @@ app.get('/register',(req,res)=>{
         prenom:'prenom',
         numero_tel:'numero_tel',
         mdpass:'mdpass'
-
     })
 })
 app.get('/login',(req,res)=>{
@@ -27,16 +32,16 @@ app.get('/login',(req,res)=>{
 })
 app.get('/',(req,res)=>{
     res.render('index',{
-        title:'WAZAP'
-    })
-})
-app.get('/chat',(req,res)=>{
-    res.render('chat',{
-        nom:'nom',
         message:'message',
-        date:Date.now
+        data:'date'
     })
 })
+// app.get('/chat',(req,res)=>{
+//     res.render('chat',{
+//         message:'message',
+//         date:'date'
+//     })
+// })
 
 app.get('/profil',(req,res)=>{
     res.render('profil',{
