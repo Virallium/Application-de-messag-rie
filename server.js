@@ -42,12 +42,6 @@ app.get('archive/',(req,res)=>{
         msg:'message'
     })
 })
-// app.get('/chat',(req,res)=>{
-//     res.render('chat',{
-//         message:'message',
-//         date:'date'
-//     })
-// })
 
 app.get('/profil',(req,res)=>{
     res.render('profil',{
@@ -58,12 +52,6 @@ app.get('/profil',(req,res)=>{
     })
 })
 
-app.get('/categorie',(req, res)=>{
-    res.render('catg',{
-        nom:'nom'
-    })
-
-})
 server.listen(3000,()=>{
     console.log('Le serveur est en marche')
 })
