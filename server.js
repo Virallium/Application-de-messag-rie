@@ -42,7 +42,19 @@ app.get('archive/',(req,res)=>{
         msg:'message'
     })
 })
-
+app.get('/profil',(req,res)=>{
+    res.render('profil',{
+        nom:'nom',
+        prenom:'prenom',
+        numerotel:'numerotel'
+    })
+})
+app.get('/archive',(req,res)=>{
+    res.render('archive',{
+        nom:'nom',
+        prenom:'prenom',
+    })
+})
 app.get('/groupe',(req,res)=>{
     res.render('groupe',{
         nomgroupe:'nomgroupe',
