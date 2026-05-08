@@ -83,8 +83,7 @@ app.post("/login", (req, res) => {
 app.post("/register", (req, res) => {
   const { username, number } = req.body;
 
-    req.session.user = {
-      
+  req.session.user = {
     name: username,
     number: number,
     role: "user",
