@@ -235,6 +235,12 @@
 </body>
 <script>
     const formChat = document.getElementById('formchat');
+    formChat.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const tel = document.getElementById('tel').value;
+        // Vous pouvez ajouter ici une validation supplémentaire avant de soumettre le formulaire
+        formChat.submit();
+    });
 </script>
 
 </html>

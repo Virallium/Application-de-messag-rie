@@ -1,5 +1,81 @@
-<%-include('partials/header')%>
-    <section class="">
+     <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style/media.css">
+    <link rel="stylesheet" href="/style/register.css">
+ <%-include('partials/header')%>
+    <main>
+        <header>
+            <div class="logo"><img src="/photos/logo.png" alt="logo" width="130px"></div>
+            <nav>
+                <div class="div">
+                    <a href="/index.ejs">
+                        <i class="fa-regular fa-comment"></i>
+                        <p>Discussion</p>
+                    </a>
+                </div>
+                <div class="div">
+                    <a href="/archive">
+                        <i class="fa-solid fa-box-archive"></i>
+                        <p>Archives</p>
+                    </a>
+                </div>
+                <div class="div">
+                    <a href="/profil" class="active">
+                        <i class="fa-solid fa-user-pen"></i>
+                        <p>Profil</p>
+                    </a>
+                </div>
+                <div class="div">
+                    <a href="/groupe">
+                        <i class="fa-solid fa-people-line"></i>
+                        <p>Groupe</p>
+                    </a>
+                </div>
+            </nav>
+        </header>
         
-    </section>
-<%-include('partials/footer')%>
+        <section class="contents">
+            <div class="center" id="center">
+                <div class="top">
+                    <h1>Profil</h1>
+                </div>
+                <div class="allchat">
+                    <div class="boxs">
+                        <div class="box">
+                            <div class="profil">
+                                <img src="" alt="">
+                                <div class="nom">
+                                    <p class="nom"></p>
+                                    <p class="prenom"></p>
+                                </div>
+                            </div>
+                            <div class="right">
+                                <div class="date"></div>
+                                <div class="vu_ou_non"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="chat">
+                <div class="header">
+                    <div class="left">
+                        <img src="" alt="">
+                        <div class="text">
+                            <p class="nom prenom"></p>
+                            <p class="status"></p>
+                        </div>
+                    </div>
+                    <a href="" class="telephone"><i class="fa-solid fa-phone-flip"></i></a>
+                </div>
+                <div class="message" id="message">
+                    
+                </div>
+                <form action="" method="post" id="formEnvoy">
+                    <input type="text" placeholder="Ecrire" required id="Message">
+                    <button type="submit">Envoyer</button>
+                </form>
+            </div>
+        </section>
+    </main>
+ <%-include('partials/footer')%>
+ 
