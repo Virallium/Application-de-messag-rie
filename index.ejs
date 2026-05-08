@@ -1,0 +1,130 @@
+ <%-include('partials/header')%>
+    <main>
+        <div class="loading">
+            <div class="center">
+                <img src="/photos/logoanim.png" alt="logo" width="300px">
+            </div>
+        </div>
+        <header>
+            <div class="logo"><img src="/photos/logo.png" alt="logo" width="130px"></div>
+            <nav>
+                <div class="div">
+                    <a href="" class="active">
+                        <i class="fa-regular fa-comment"></i>
+                        <p>Discussion</p>
+                    </a>
+                </div>
+                <div class="div">
+                    <a href="">
+                        <i class="fa-solid fa-box-archive"></i>
+                        <p>Archives</p>
+                    </a>
+                </div>
+                <div class="div">
+                    <a href="">
+                        <i class="fa-solid fa-user-pen"></i>
+                        <p>Profil</p>
+                    </a>
+                </div>
+            </nav>
+        </header>
+        
+        <section class="contents">
+            <div class="center" id="center">
+                <div class="top">
+                    <h1>Chat</h1>
+                    <div class="input">
+                        <input type="text">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                </div>
+                <div class="enligne">
+                    <h2>En ligne</h2>
+                    <div class="box">
+                        <div class="img">
+                            <img src="" alt="">
+                            <p></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="allchat">
+                    <h2>Tous les chats</h2>
+                    <div class="boxs">
+                        <div class="box">
+                            <div class="profil">
+                                <img src="" alt="">
+                                <div class="nom">
+                                    <p class="nom"></p>
+                                    <p class="prenom"></p>
+                                </div>
+                            </div>
+                            <div class="right">
+                                <div class="date"></div>
+                                <div class="vu_ou_non"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="chat">
+                <div class="header">
+                    <div class="left">
+                        <img src="" alt="">
+                        <div class="text">
+                            <p class="nom prenom"></p>
+                            <p class="status"></p>
+                        </div>
+                    </div>
+                    <a href="" class="telephone"><i class="fa-solid fa-phone-flip"></i></a>
+                </div>
+                <div class="message" id="message">
+                    
+                </div>
+                <form action="" method="post" id="formEnvoy" class="d-flex align-items-center gap-2 p-3">
+                    <input type="text" placeholder="Ecrire" required id="Message" class="form-control flex-grow-1 rounded-pill">
+                    <button type="submit" class="btn btn-primary px-4 rounded-pill flex-shrink-0">Envoyer</button>
+                </form>
+            </div>
+        </section>
+    </main>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const form = document.querySelector('#formEnvoy');
+        const messageInput = document.getElementById('Message');
+        const bodychat = document.getElementById('message');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if ( messageInput.value !== "") {
+                const data = {
+                    message: messageInput.value,
+                    date:new Date().toLocaleDateString()
+                };
+                socket.emit('chat', data);
+                messageInput.value = "";
+                messageInput.focus()
+            }
+        });
+        
+        socket.on('chat', (data) => {
+            const p = document.createElement('p');
+            const message = document.createElement('span');
+            const date = document.createElement('small');
+
+            p.classList.add('boxsms');
+            p.classList.add(data.senderId === socket.id ? 'sms-sent' : 'sms-received');
+            message.classList.add('sms-content');
+            date.classList.add('sms-date');
+
+            message.textContent = data.message;
+            date.textContent = data.date;
+
+            p.appendChild(message);
+            p.appendChild(date);
+            bodychat.appendChild(p);
+            bodychat.scrollTop = bodychat.scrollHeight;
+        });
+    </script>
+ <%-include('partials/footer')%>
+ 
