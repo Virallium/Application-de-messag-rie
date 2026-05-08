@@ -43,6 +43,7 @@ app.get('archive/', (req, res) => {
     })
 })
 
+
 app.get('/profil', (req, res) => {
     res.render('profil', {
         photo: 'photo',
@@ -67,5 +68,11 @@ app.get('/profile', (req, res) => {
 });
 
 server.listen(3000, () => {
-    console.log('Le serveur est en marche')
+    app.get('/groupe', (req, res) => {
+        res.render('groupe', {
+            nomgroupe: 'nomgroupe',
+            membresgroupe: 'membres_groupe'
+        })
+    })
+
 })
