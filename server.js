@@ -75,16 +75,25 @@ app.get("/register", (req, res) => {
     mdpass: "mdpass",
   });
 });
-// app.get("/login", (req, res) => {
-//   res.render("login", {
-//     nom: "nom",
-//   });
-// });
-app.get("/", (req, res) => {
+app.post("/login", (req, res) => {
   res.render("login", {
-    // message: "message",
-    // data: "date",
+    nom: "nom",
   });
+});
+app.post("/register", (req, res) => {
+  const { username, number } = req.body;
+
+    req.session.user = {
+      
+    name: username,
+    number: number,
+    role: "user",
+  };
+
+  res.redirect("/chat");
+});
+app.get("/", (req, res) => {
+  req.session.user = {};
 });
 app.get("archive/", (req, res) => {
   res.render("archive", {
