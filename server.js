@@ -3,8 +3,12 @@ const app=express()
 const http=require('http')
 const path=require('path')
 const { Server } = require('socket.io')
-const io= new Server(server)
 const server=http.createServer(app)
+const io= new Server(server)
+
+app.set('view engine','ejs')
+app.use(express.static('public'))
+app.use(express.urlencoded({extended:true}))
 
 app.get('/register',(req,res)=>{
     res.render('register',{
@@ -13,6 +17,7 @@ app.get('/register',(req,res)=>{
         prenom:'prenom',
         numero_tel:'numero_tel',
         mdpass:'mdpass'
+
     })
 })
 app.get('/login',(req,res)=>{
@@ -20,6 +25,34 @@ app.get('/login',(req,res)=>{
         nom:'nom'
     })
 })
-app.listen(5000,()=>{
+app.get('/',(req,res)=>{
+    res.render('index',{
+        title:'WAZAP'
+    })
+})
+app.get('/chat',(req,res)=>{
+    res.render('chat',{
+        nom:'nom',
+        message:'message',
+        date:Date.now
+    })
+})
+
+app.get('/profil',(req,res)=>{
+    res.render('profil',{
+        photo:'photo',
+        nom:'nom',
+        prenom:'prenom',
+        descr:'descr'
+    })
+})
+
+app.get('/categorie',(req, res)=>{
+    res.render('catg',{
+        nom:'nom'
+    })
+
+})
+server.listen(3000,()=>{
     console.log('Le serveur est en marche')
 })

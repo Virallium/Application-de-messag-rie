@@ -1,0 +1,260 @@
+:root {
+    --bg-color: #ffffff;
+    --secondary-color: #3ab1fd;
+    --txt-color: #000000;
+    --txt-descr: #333333;
+    --bg-light: #f5f7f9;
+    --border-color: #eeeeee;
+    --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins';
+    text-decoration: none;
+}
+
+body {
+    background-color: var(--bg-light);
+    height: 100vh;
+    overflow: hidden;
+}
+
+main {
+    display: flex;
+    height: 100vh;
+}
+
+/* --- Barre latérale Gauche (Header/Nav) --- */
+header {
+    width: 80px;
+    background-color: var(--bg-color);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+}
+
+header .logo {
+    margin-bottom: 40px;
+}
+
+header nav {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+header nav .div a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    color: #b0b0b0;
+    transition: 0.3s;
+}
+
+header nav .div a:hover, header nav .div a.active {
+    color: var(--secondary-color);
+}
+
+header nav .div a i {
+    font-size: 22px;
+    margin-bottom: 5px;
+}
+
+header nav .div a p {
+    font-size: 10px;
+    font-weight: 600;
+}
+
+/* --- Section Contenu (Liste des chats + Fenêtre de chat) --- */
+.contents {
+    display: flex;
+    flex: 1;
+}
+
+/* Liste des conversations (Center) */
+.center {
+    width: 350px;
+    background-color: var(--bg-color);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+}
+
+.center .top {
+    padding: 25px;
+}
+
+.center h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.center .input {
+    background: var(--bg-light);
+    padding: 10px 15px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.center .input input {
+    border: none;
+    background: transparent;
+    flex: 1;
+    outline: none;
+    font-size: 14px;
+}
+
+/* Utilisateurs en ligne */
+.enligne {
+    padding: 0 25px 20px;
+}
+
+.enligne .box {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+.enligne .img {
+    text-align: center;
+    min-width: 60px;
+}
+
+.enligne img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid var(--secondary-color);
+    object-fit: cover;
+}
+
+/* Liste de tous les chats */
+.allchat {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 25px;
+}
+
+.allchat .box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--bg-light);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.allchat .box:hover {
+    transform: translateX(5px);
+}
+
+.allchat .profil {
+    display: flex;
+    gap: 12px;
+}
+
+.allchat .profil img {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+}
+
+.allchat .nom p.nom {
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.allchat .nom p.prenom {
+    color: var(--txt-descr);
+    font-size: 13px;
+}
+
+/* --- Fenêtre de Discussion (Chat) --- */
+.chat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); /* Fond style WhatsApp */
+    background-size: cover;
+    background-blend-mode: overlay;
+    background-color: #f0f2f5;
+}
+
+.chat .header {
+    background: var(--bg-color);
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow);
+}
+
+.chat .header .left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.chat .header img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+}
+
+.chat .header .status {
+    font-size: 12px;
+    color: #2ecc71;
+    font-weight: 600;
+}
+
+.chat .telephone {
+    width: 40px;
+    height: 40px;
+    background: var(--secondary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.chat .telephone:hover {
+    box-shadow: 0 0 15px var(--secondary-color);
+    transform: scale(1.1);
+}
+
+/* --- Écran de Chargement --- */
+.loading {
+    position: fixed;
+    inset: 0;
+    background: white;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeOut 2s forwards;
+    -webkit-animation: fadeOut 2s forwards;
+    width:100%;
+}
+.loading .center{
+    display:flex;
+    justify-content: center;
+    align-items:center;
+}
+
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; visibility: hidden; }
+}

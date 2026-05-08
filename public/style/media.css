@@ -1,0 +1,67 @@
+/* --- RESPONSIVE DESIGN --- */
+
+@media (max-width: 900px) {
+    /* On cache la barre latérale étroite pour gagner de la place */
+    header {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        height: 60px;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 0;
+        z-index: 100;
+        border-right: none;
+        border-top: 1px solid var(--border-color);
+    }
+
+    header .logo {
+        display: none; /* Le logo prend trop de place en bas */
+    }
+
+    header nav {
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-around;
+        gap: 0;
+    }
+
+    main {
+        flex-direction: column;
+    }
+
+    .contents {
+        width: 100%;
+    }
+
+    /* j'ai réduit la liste des contacts pour laisser de la place au chat */
+    .center {
+        width: 100%;
+    }
+
+    .chat {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: calc(100% - 60px); /* On laisse la place pour la nav du bas */
+        z-index: 50;
+        display: none; /* j'ai masqué par défaut sur petit écran */
+    }
+
+}
+
+@media (max-width: 500px) {
+    .center h1 {
+        font-size: 20px;
+    }
+    
+    .enligne .img {
+        min-width: 50px;
+    }
+
+    .enligne img {
+        width: 40px;
+        height: 40px;
+    }
+}
