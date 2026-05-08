@@ -51,7 +51,12 @@ app.get('/profil',(req,res)=>{
         descr:'descr'
     })
 })
-
+app.get('/groupe',(req,res)=>{
+    res.render('groupe',{
+        nomgroupe:'nomgroupe',
+        membresgroupe :'membres_groupe'
+    })
+})
 server.listen(3000,()=>{
     console.log('Le serveur est en marche')
 })

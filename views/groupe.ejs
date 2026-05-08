@@ -3,16 +3,12 @@
     <link rel="stylesheet" href="/style/register.css">
  <%-include('partials/header')%>
     <main>
-        <div class="loading">
-            <div class="center">
-                <img src="/photos/logoanim.png" alt="logo" width="300px">
-            </div>
-        </div>
+        </>
         <header>
             <div class="logo"><img src="/photos/logo.png" alt="logo" width="130px"></div>
             <nav>
                 <div class="div">
-                    <a href="/index.ejs" class="active">
+                    <a href="/index">
                         <i class="fa-regular fa-comment"></i>
                         <p>Discussion</p>
                     </a>
@@ -30,7 +26,7 @@
                     </a>
                 </div>
                 <div class="div">
-                    <a href="/groupe">
+                    <a href="/groupe" class="active">
                         <i class="fa-solid fa-people-line"></i>
                         <p>Groupe</p>
                     </a>
@@ -41,27 +37,17 @@
         <section class="contents">
             <div class="center" id="center">
                 <div class="top">
-                    <h1>Chat</h1>
+                    <h1>Groupe</h1>
                     <div class="input">
                         <input type="text">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </div>
                 </div>
-                <div class="enligne">
-                    <h2>En ligne</h2>
-                    <div class="box">
-                        <div class="img">
-                            <img src="" alt="">
-                            <p></p>
-                        </div>
-                    </div>
-                </div>
                 <div class="allchat">
-                    <h2>Tous les Messages</h2>
+                    <h2>Communautés</h2>
                     <div class="boxs">
                         <div class="box">
                             <div class="profil">
-                                <img src="" alt="">
                                 <div class="nom">
                                     <p class="nom"></p>
                                     <p class="prenom"></p>
