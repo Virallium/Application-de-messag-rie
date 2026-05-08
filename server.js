@@ -25,12 +25,12 @@ app.get('/register',(req,res)=>{
         mdpass:'mdpass'
     })
 })
-app.get('/login',(req,res)=>{
+app.get('/',(req,res)=>{
     res.render('login',{
         nom:'nom'
     })
 })
-app.get('/',(req,res)=>{
+app.get('/index',(req,res)=>{
     res.render('index',{
         message:'message',
         data:'date'
