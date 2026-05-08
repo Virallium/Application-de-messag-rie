@@ -36,6 +36,12 @@ app.get('/',(req,res)=>{
         data:'date'
     })
 })
+app.get('archive/',(req,res)=>{
+    res.render('archive',{
+        nom:'',
+        msg:'message'
+    })
+})
 // app.get('/chat',(req,res)=>{
 //     res.render('chat',{
 //         message:'message',
