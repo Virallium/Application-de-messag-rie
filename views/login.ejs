@@ -203,12 +203,12 @@
             </div>
             <% } %>
 
-                <form action="/login" method="POST">
+                <form action="/login" method="POST" id="formchat">
                     <div class="input-group">
                         <label>Téléphone</label>
                         <div class="input-icon">
                             <i class="fas fa-phone-alt"></i>
-                            <input type="tel" name="tel" placeholder="+243 826 094 092" required>
+                            <input type="tel" name="tel" id="tel" placeholder="+243 826 094 092" required>
                         </div>
                     </div>
 
@@ -233,5 +233,8 @@
     </div>
 
 </body>
+<script>
+    const formChat = document.getElementById('formchat');
+</script>
 
 </html>
