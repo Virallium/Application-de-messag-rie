@@ -43,14 +43,6 @@ app.get('archive/',(req,res)=>{
     })
 })
 
-app.get('/profil',(req,res)=>{
-    res.render('profil',{
-        photo:'photo',
-        nom:'nom',
-        prenom:'prenom',
-        descr:'descr'
-    })
-})
 app.get('/groupe',(req,res)=>{
     res.render('groupe',{
         nomgroupe:'nomgroupe',
