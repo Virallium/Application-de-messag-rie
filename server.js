@@ -36,6 +36,23 @@ const db = new sqlite3.Database("./chat.db", (err) => {
 });
 db.run(
   `
+  CREATE TABLE IF NOT EXISTS users(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username TEXT,
+  contact TEXT,
+  status TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP)`,
+  (err) => {
+    if (err) {
+      console.log(err.message);
+      return;
+    }
+    console.log("la table user est créée avec succès");
+  },
+);
+
+db.run(
+  `
   CREATE TABLE IF NOT EXISTS messages(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT,
@@ -47,6 +64,55 @@ db.run(
       return;
     }
     console.log("la table message est créée avec succès");
+  },
+);
+
+db.run(
+  `
+  CREATE TABLE IF NOT EXISTS groupes(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nom_groupe TEXT,
+  membres_groupe INTEGER,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP)`,
+  (err) => {
+    if (err) {
+      console.log(err.message);
+      return;
+    }
+    console.log("la table groupes est créée avec succès");
+  },
+);
+
+db.run(
+  `
+  CREATE TABLE IF NOT EXISTS groupe_messages(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  content TEXT,
+  groupe_id INTEGER,
+  user_id INTEGER,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP)`,
+  (err) => {
+    if (err) {
+      console.log(err.message);
+      return;
+    }
+    console.log("la table groupe_messages est créée avec succès");
+  },
+);
+
+db.run(
+  `
+  CREATE TABLE IF NOT EXISTS notifications(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  source TEXT,
+  content TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP)`,
+  (err) => {
+    if (err) {
+      console.log(err.message);
+      return;
+    }
+    console.log("la table notifications est créée avec succès");
   },
 );
 
