@@ -99,36 +99,36 @@
                 </div>
             </div>
             <div class="chat">
-                <!-- Dans la div class="chat" -->
-        <div class="header">
-            <div class="left">
-                    <!-- AJOUTE CE BOUTON ICI -->
-                    <button id="backToList" class="mobile-back-btn" style="border: none; padding:.5rem;"><i class="fa-solid fa-arrow-left"></i></button>
-                    
-                    <img id="chatUserPhoto" src="/photos/default.png" alt="">
-                    <div class="text">
-                        <p class="nom prenom" id="chatUserName">Discussion Générale</p>
-                        <p class="status" id="chatUserStatus">Hors ligne</p>
-                    </div>
-                </div>
-                <a href="tel:" id="chatUserPhone" class="telephone"><i class="fa-solid fa-phone-flip"></i></a>
-            </div>
-                <div class="message" id="message">
-                    <% if (messages && messages.length > 0) { %>
-                        <% messages.forEach(msg => { %>
-                            <div class="boxsms <%= msg.username === user.username ? 'sms-sent' : 'sms-received' %>">
-                                <span class="sms-content"><strong><%= msg.username %>:</strong> <%= msg.content %></span>
-                                <small class="sms-date"><%= new Date(msg.created_at).toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'}) %></small>
+           
+                <div class="header">
+                    <div class="left">
+                        
+                            <button id="backToList" class="mobile-back-btn" style="border: none; padding:.5rem;"><i class="fa-solid fa-arrow-left"></i></button>
+                            
+                            <img id="chatUserPhoto" src="/photos/default.png" alt="">
+                            <div class="text">
+                                <p class="nom prenom" id="chatUserName">Discussion Générale</p>
+                                <p class="status" id="chatUserStatus">Hors ligne</p>
                             </div>
-                        <% }); %>
-                    <% } %>
-                </div>
-                <form action="" method="post" id="formEnvoy" class="d-flex align-items-center gap-2 p-3" class="form_sms">
-                    <input type="text" placeholder="Ecrire" required id="Message" class="form-control flex-grow-1 rounded-pill">
-                    <button type="submit" class="btn btn-primary px-4 rounded-pill flex-shrink-0">Envoyer</button>
-                    <button><i class="fa-solid fa-trash"></i></button>
-                </form>
-                
+                        </div>
+                        <a href="tel:" id="chatUserPhone" class="telephone"><i class="fa-solid fa-phone-flip"></i></a>
+                    </div>
+                        <div class="message" id="message">
+                            <% if (messages && messages.length > 0) { %>
+                                <% messages.forEach(msg => { %>
+                                    <div class="boxsms <%= msg.username === user.username ? 'sms-sent' : 'sms-received' %>">
+                                        <span class="sms-content"><strong><%= msg.username %>:</strong> <%= msg.content %></span>
+                                        <small class="sms-date"><%= new Date(msg.created_at).toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'}) %></small>
+                                    </div>
+                                <% }); %>
+                            <% } %>
+                        </div>
+                        <form action="" method="post" id="formEnvoy" class="d-flex align-items-center gap-2 p-3" class="form_sms">
+                            <input type="text" placeholder="Ecrire" required id="Message" class="form-control flex-grow-1 rounded-pill">
+                            <button type="submit" class="btn btn-primary px-4 rounded-pill flex-shrink-0">Envoyer</button>
+                            <button><i class="fa-solid fa-trash"></i></button>
+                        </form>
+                        
             </div>
         </section>
     </main>
@@ -170,9 +170,9 @@
 
         // --- LOGIQUE MOBILE ---
         if (window.innerWidth < 1000) {
-            centerCol.style.display = 'none'; // Cache la liste
-            chatCol.style.display = 'flex';   // Affiche le chat (flex car c'est souvent le cas pour les chatbox)
-            footernav.classList.add('hide_header'); // Cache ton menu du bas pour gagner de l'espace
+            centerCol.style.display = 'none'; // Cacher la liste
+            chatCol.style.display = 'flex';   // Affichage du chat
+            footernav.classList.add('hide_header');
         }
 
     }
