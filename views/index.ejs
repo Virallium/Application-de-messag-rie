@@ -1,6 +1,4 @@
-     <link rel="stylesheet" href="/style/style.css">
-    <link rel="stylesheet" href="/style/media.css">
-    <link rel="stylesheet" href="/style/register.css">
+
  <%-include('partials/header')%>
     <main>
         <div class="loading">
@@ -29,12 +27,6 @@
                         <p>Profil</p>
                     </a>
                 </div>
-                <div class="div">
-                    <a href="/groupe">
-                        <i class="fa-solid fa-people-line"></i>
-                        <p>Groupe</p>
-                    </a>
-                </div>
             </nav>
         </header>
         
@@ -57,7 +49,7 @@
                     </div>
                 </div>
                 <div class="allchat">
-                    <h2>Tous les Messages</h2>
+                    <h2>Tous les chats</h2>
                     <div class="boxs">
                         <div class="box">
                             <div class="profil">
@@ -89,9 +81,9 @@
                 <div class="message" id="message">
                     
                 </div>
-                <form action="" method="post" id="formEnvoy">
-                    <input type="text" placeholder="Ecrire" required id="Message">
-                    <button type="submit">Envoyer</button>
+                <form action="" method="post" id="formEnvoy" class="d-flex align-items-center gap-2 p-3">
+                    <input type="text" placeholder="Ecrire" required id="Message" class="form-control flex-grow-1 rounded-pill">
+                    <button type="submit" class="btn btn-primary px-4 rounded-pill flex-shrink-0">Envoyer</button>
                 </form>
             </div>
         </section>
@@ -118,8 +110,19 @@
         
         socket.on('chat', (data) => {
             const p = document.createElement('p');
-            p.classList.add('boxsms')
-            p.innerHTML = `<span class="boxsms"><b>${data.date}</b>: ${data.message}</span>`;
+            const message = document.createElement('span');
+            const date = document.createElement('small');
+
+            p.classList.add('boxsms');
+            p.classList.add(data.senderId === socket.id ? 'sms-sent' : 'sms-received');
+            message.classList.add('sms-content');
+            date.classList.add('sms-date');
+
+            message.textContent = data.message;
+            date.textContent = data.date;
+
+            p.appendChild(message);
+            p.appendChild(date);
             bodychat.appendChild(p);
             bodychat.scrollTop = bodychat.scrollHeight;
         });

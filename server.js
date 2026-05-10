@@ -49,6 +49,18 @@ db.run(
     console.log("la table message est créée avec succès");
   },
 );
+db.run(`
+  CREATE TABLE IF NOT EXISTS users(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT,
+    middlename TEXT,
+    number TEXT UNIQUE,
+    password TEXT,
+    photo TEXT ,
+  )`, (err) => {
+    if (err) console.log("Erreur table users:", err.message);
+    else console.log("Table users prête.");
+});
 
 io.on("connection", (socket) => {
   console.log("Un utilisateur s'est conncecté ");
@@ -60,41 +72,69 @@ io.on("connection", (socket) => {
         if (err) {
           console.log(err);
         }
-        socket.broadcast.emit("chat", data);
       },
     );
     io.emit("chat", data);
   });
 });
 app.get("/register", (req, res) => {
-  res.render("register", {
-    photo: "photo",
-    nom: "nom",
-    prenom: "prenom",
-    numero_tel: "numero_tel",
-    mdpass: "mdpass",
-  });
+  res.render("register");
 });
-app.post("/login", (req, res) => {
-  res.render("login", {
-    nom: "nom",
-  });
-});
+
 app.post("/register", (req, res) => {
-  const { username, number } = req.body;
+  const { lastname, middlename ,number, mdpass , photo} = req.body;
 
-  req.session.user = {
-    name: username,
-    number: number,
-    role: "user",
-  };
+  db.run(
+    `INSERT INTO users (username,middlename, number, password, photo) VALUES (?, ?, ?, ?, ?)`,
+    [lastname, middlename ,number, mdpass, photo],
+    (err) => {
+      if (err) {
+        console.error(err.message);
+        return res.send("Erreur : Ce numéro de téléphone est déjà utilisé. <a href='/register'>Retour</a>");
+      }
 
-  res.redirect("/chat");
+      res.redirect("/"); 
+    }
+  );
 });
+// 1. Route pour afficher la page (sans détruire la session immédiatement)
 app.get("/", (req, res) => {
-  req.session.user = {};
+  if (req.session.user) return res.redirect("/index"); // Si déjà connecté, on entre !
+  res.render("login");
 });
-app.get("archive/", (req, res) => {
+
+// 2. Route POST spécifique pour le login
+app.post("/login", (req, res) => {
+  const { number, mdpass } = req.body;
+
+  db.get(
+    `SELECT * FROM users WHERE number = ? AND password = ?`,
+    [number, mdpass],
+    (err, row) => {
+      if (err) {
+        console.error(err.message);
+        return res.send("Erreur lors de la connexion.");
+      }
+
+      if (row) {
+        //l'initialisation de la session utilisateur
+        req.session.user = {
+          id: row.id,
+          username: row.username,
+          number: row.number,
+          role: "user"
+        };
+        // On attend que la session soit sauvegardée avant de rediriger
+        req.session.save(() => {
+          res.redirect("/index");
+        });
+      } else {
+        res.send("Identifiants incorrects. <a href='/'>Réessayer</a>");
+      }
+    }
+  );
+});
+app.get("/archive", (req, res) => {
   res.render("archive", {
     nom: "",
     msg: "message",
@@ -110,18 +150,22 @@ app.get("/profil", (req, res) => {
   });
 });
 
-app.get("/profil", (req, res) => {
-  res.render("profil", {
-    photo: "photo",
-    nom: "nom",
-    prenom: "prenom",
-    descr: "descr",
-  });
-});
 app.get("/groupe", (req, res) => {
   res.render("groupe", {
     nomgroupe: "nomgroupe",
     membresgroupe: "membres_groupe",
+  });
+});
+app.get("/index", (req, res) => {
+  if (!req.session.user) return res.redirect("/"); 
+    //affichage des 50 derniers messages
+  db.all("SELECT * FROM messages ORDER BY created_at ASC LIMIT 50", [], (err, rows) => {
+    if (err) {
+      console.error(err.message);
+      return res.render("index", { user: req.session.user, messages: [] });
+    }
+   
+    res.render("index", { user: req.session.user, messages: rows });
   });
 });
 server.listen(3000, () => {

@@ -1,471 +1,336 @@
-<%-include('partials/header')%>
 
-    <style>
-         :root {
-            --bg-color: #ffffff;
-            --secondary-color: #3ab1fd;
-            --txt-color: #000000;
-            --txt-descr: #333333;
-            --bg-light: #f5f7f9;
-            --border-color: #eeeeee;
-            --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        }
-        
-        .profile-section {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, var(--bg-light) 0%, #e8f5e9 100%);
-            padding: 40px;
-            min-height: calc(100vh - 80px);
-        }
-        
-        .profile-card {
-            width: 100%;
-            max-width: 650px;
-            background: var(--bg-color);
-            border-radius: 30px;
-            padding: 40px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            animation: fadeIn 0.5s ease-out;
-        }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .profile-header {
-            text-align: center;
-            margin-bottom: 35px;
-        }
-        
-        .profile-header h1 {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--txt-color);
-            margin-bottom: 8px;
-        }
-        
-        .profile-header p {
-            color: var(--txt-descr);
-            font-size: 14px;
-        }
-        /* Photo de profil */
-        
-        .photo-section {
-            text-align: center;
-            margin-bottom: 35px;
-        }
-        
-        .profile-photo {
-            position: relative;
-            display: inline-block;
-            cursor: pointer;
-        }
-        
-        .profile-photo img {
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid var(--secondary-color);
-            padding: 3px;
-            transition: 0.3s;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-        }
-        
-        .profile-photo:hover img {
-            opacity: 0.8;
-            transform: scale(1.05);
-        }
-        
-        .photo-overlay {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            background: var(--secondary-color);
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 16px;
-            transition: 0.3s;
-        }
-        
-        .profile-photo:hover .photo-overlay {
-            transform: scale(1.1);
-        }
-        
-        .photo-input {
-            display: none;
-        }
-        /* Organisation des champs */
-        
-        .form-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
+<style>
+    :root {
+        --bg-color: #ffffff;
+        --secondary-color: #3ab1fd;
+        --txt-color: #000000;
+        --txt-descr: #666666; /* Gris doux pour les descriptions */
+        --bg-light: #f5f7f9;
+        --border-color: #eeeeee;
+        --shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    /* --- Styles Généraux & Layout --- */
+    * {
+        margin: 0;
+        padding: 0;
+        text-decoration: none;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body, html {
+        width: 100%;
+        height: 100%;
+        background-color: var(--bg-light);
+    }
+
+    .profile-section {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        min-height: 100vh;
+        padding: 2rem;
+        background: linear-gradient(135deg, #f5f7f9 0%, #e3f2fd 100%);
+    }
+
+    .profile-card {
+        width: 100%;
+        max-width: 700px;
+        background: var(--bg-color);
+        border-radius: 24px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    form {
+        padding: 2.5rem;
+    }
+
+    .profile-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .profile-header h1 {
+        font-size: 24px;
+        color: var(--txt-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .profile-header p {
+        color: var(--txt-descr);
+        font-size: 14px;
+    }
+
+    /* --- Section Photo --- */
+    .photo-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .profile-photo {
+        position: relative;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .profile-photo:hover {
+        transform: scale(1.02);
+    }
+
+    .profile-photo img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--secondary-color);
+        padding: 3px;
+        background: white;
+    }
+
+    .photo-overlay {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        background: var(--secondary-color);
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        border: 3px solid white;
+        font-size: 14px;
+    }
+
+    .photo-input { display: none; }
+
+    /* --- Grille du Formulaire --- */
+    .form-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .form-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--txt-descr);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-group label i {
+        color: var(--secondary-color);
+    }
+
+    .input-wrapper input, 
+    .input-wrapper select, 
+    .input-wrapper textarea {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        background: var(--bg-light);
+        font-size: 14px;
+        outline: none;
+        transition: all 0.3s ease;
+    }
+
+    .input-wrapper input:focus, 
+    .input-wrapper select:focus, 
+    .input-wrapper textarea:focus {
+        border-color: var(--secondary-color);
+        background: #fff;
+        box-shadow: 0 0 0 4px rgba(58, 177, 253, 0.1);
+    }
+
+    /* --- Boutons d'action --- */
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .btn-save {
+        flex: 2;
+        background: var(--secondary-color);
+        color: white;
+        border: none;
+        padding: 14px;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: opacity 0.3s;
+    }
+
+    .btn-cancel {
+        flex: 1;
+        background: white;
+        border: 1px solid var(--border-color);
+        padding: 14px;
+        border-radius: 12px;
+        cursor: pointer;
+        color: var(--txt-descr);
+        transition: background 0.3s;
+    }
+
+    .btn-save:hover { opacity: 0.9; }
+    .btn-cancel:hover { background: #f9f9f9; }
+
+    /* Responsive */
+    @media (max-width: 600px) {
         .form-row {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
+            grid-template-columns: 1fr;
         }
-        
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+        .profile-section {
+            padding: 1rem;
         }
-        
-        .form-group label {
-            font-weight: 600;
-            color: var(--txt-color);
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .form-group label i {
-            color: var(--secondary-color);
-            font-size: 16px;
-            width: 20px;
-        }
-        
-        .input-wrapper {
-            position: relative;
-        }
-        
-        .input-wrapper input,
-        .input-wrapper select,
-        .input-wrapper textarea {
-            width: 90%;
-            padding: 12px 15px;
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            background: var(--bg-light);
-            font-family: 'Poppins', sans-serif;
-            outline: none;
-        }
-        
-        .input-wrapper textarea {
-            resize: vertical;
-            min-height: 90px;
-        }
-        
-        .input-wrapper input:focus,
-        .input-wrapper select:focus,
-        .input-wrapper textarea:focus {
-            border-color: var(--secondary-color);
-            background: var(--bg-color);
-            box-shadow: 0 0 0 3px rgba(58, 177, 253, 0.1);
-        }
-        /* Section spéciale pour la bio */
-        
-        .full-width {
-            grid-column: span 2;
-        }
-        /* Alertes */
-        
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            padding: 15px 20px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-left: 4px solid #28a745;
-            animation: slideDown 0.5s ease;
-        }
-        
-        .alert-danger {
-            background: #fee;
-            color: #c33;
-            padding: 15px 20px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-left: 4px solid #c33;
-            animation: slideDown 0.5s ease;
-        }
-        
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        /* Boutons */
-        
-        .form-actions {
-            display: flex;
-            gap: 15px;
-            margin-top: 10px;
-        }
-        
-        .btn-save {
-            flex: 2;
-            padding: 14px;
-            background: var(--secondary-color);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .btn-save:hover {
-            background: #2a9be0;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(58, 177, 253, 0.3);
-        }
-        
-        .btn-cancel {
-            flex: 1;
-            padding: 14px;
-            background: transparent;
-            color: var(--txt-descr);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        
-        .btn-cancel:hover {
-            background: var(--bg-light);
-            border-color: var(--secondary-color);
-            color: var(--secondary-color);
-        }
-        /* Responsive */
-        
-        @media (max-width: 768px) {
-            .profile-section {
-                padding: 20px;
-            }
-            .profile-card {
-                padding: 25px;
-                margin: 15px;
-            }
-            .form-row {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-            .full-width {
-                grid-column: span 1;
-            }
-            .form-actions {
-                flex-direction: column;
-            }
-            .btn-save,
-            .btn-cancel {
-                width: 100%;
-            }
-        }
-    </style>
+    }
 
-    <section class="profile-section">
-        <div class="profile-card">
+</style>
+
+<section class="profile-section">        
+
+        <% 
+            // Préparation des données pour éviter les erreurs undefined
+            let u = (typeof user !== 'undefined' && user) ? user : {};
+            let photoUrl = u.photo || `https://ui-avatars.com/api/?background=3ab1fd&color=fff&size=130&rounded=true&bold=true&name=${u.nom ? u.nom.charAt(0) : 'U'}`;
+        %>
+
+        <form action="/profile/update" method="POST" enctype="multipart/form-data">
             <div class="profile-header">
                 <h1>Mon Profil</h1>
                 <p>Gérez vos informations personnelles</p>
             </div>
-
-            <!-- Messages d'alerte -->
-            <% if (typeof success !== 'undefined' && success) { %>
-                <div class="alert-success">
-                    <i class="fas fa-check-circle fa-lg"></i>
-                    <span><%= success %></span>
-                </div>
-                <% } %>
-
-                    <% if (typeof error !== 'undefined' && error) { %>
-                        <div class="alert-danger">
-                            <i class="fas fa-exclamation-triangle fa-lg"></i>
-                            <span><%= error %></span>
-                        </div>
-                        <% } %>
-
-                            z
-                            <form action="/profile/update" method="POST" enctype="multipart/form-data">
-                                <!-- Photo de profil -->
-                                <div class="photo-section">
-                                    <label class="profile-photo" for="photoInput">
-                    <%
-                        let photoUrl = 'https://ui-avatars.com/api/?background=3ab1fd&color=fff&size=130&rounded=true&bold=true&name=User';
-                        
-                        if (typeof user !== 'undefined' && user && user.photo) {
-                            photoUrl = user.photo;
-                        } else if (typeof user !== 'undefined' && user && user.nom) {
-                            let initial = user.nom ? user.nom.charAt(0).toUpperCase() : 'U';
-                            photoUrl = `https://ui-avatars.com/api/?background=3ab1fd&color=fff&size=130&rounded=true&bold=true&name=${initial}`;
-                        }
-                    %>
+            <!-- Photo de profil -->
+            <div class="photo-section">
+                <label class="profile-photo" for="photoInput">
                     <img src="<%= photoUrl %>" alt="Photo de profil" id="profileImage">
                     <div class="photo-overlay">
                         <i class="fas fa-camera"></i>
                     </div>
                 </label>
-                                    <input type="file" id="photoInput" class="photo-input" accept="image/*" name="photo">
-                                    <p style="margin-top: 12px; color: var(--txt-descr); font-size: 12px;">
-                                        <i class="fas fa-info-circle"></i> Cliquez sur la photo pour la modifier
-                                    </p>
-                                </div>
+                <input type="file" id="photoInput" class="photo-input" accept="image/*" name="photo">
+                <p style="margin-top: 12px; color: var(--txt-descr); font-size: 12px;">
+                    <i class="fas fa-info-circle"></i> Cliquez sur la photo pour la modifier
+                </p>
+            </div>
 
-                                <div class="form-grid">
-                                    <!-- Nom complet sur 2 colonnes -->
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label>
-                            <i class="fas fa-user"></i>
-                            Nom
-                        </label>
-                                            <div class="input-wrapper">
-                                                <input type="text" name="nom" placeholder="Votre nom" value="<%= typeof user !== 'undefined' && user ? (user.nom || '') : '' %>" required>
-                                            </div>
-                                        </div>
+            <div class="form-grid">
+                <!-- Nom et Prénom -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Nom</label>
+                        <div class="input-wrapper">
+                            <input type="text" name="nom" value="<%= u.nom || '' %>" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-user-friends"></i> Prénom(s)</label>
+                        <div class="input-wrapper">
+                            <input type="text" name="prenom" value="<%= u.prenom || '' %>">
+                        </div>
+                    </div>
+                </div>
 
-                                        <div class="form-group">
-                                            <label>
-                            <i class="fas fa-user-friends"></i>
-                            Prénom(s)
-                        </label>
-                                            <div class="input-wrapper">
-                                                <input type="text" name="prenom" placeholder="Votre prénom" value="<%= typeof user !== 'undefined' && user ? (user.prenom || '') : '' %>">
-                                            </div>
-                                        </div>
-                                    </div>
+                <!-- Contact -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-mobile-alt"></i> Téléphone</label>
+                        <div class="input-wrapper">
+                            <input type="tel" name="telephone" value="<%= u.telephone || '' %>" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> Email</label>
+                        <div class="input-wrapper">
+                            <input type="email" name="email" value="<%= u.email || '' %>">
+                        </div>
+                    </div>
+                </div>
 
-                                    <!-- Contact sur 2 colonnes -->
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label>
-                            <i class="fas fa-mobile-alt"></i>
-                            Téléphone
-                        </label>
-                                            <div class="input-wrapper">
-                                                <input type="tel" name="telephone" placeholder="+221 77 123 45 67" value="<%= typeof user !== 'undefined' && user ? (user.telephone || '') : '' %>" required>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>
-                            <i class="fas fa-envelope"></i>
-                            Email
-                        </label>
-                                            <div class="input-wrapper">
-                                                <input type="email" name="email" placeholder="exemple@email.com" value="<%= typeof user !== 'undefined' && user ? (user.email || '') : '' %>">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Informations supplémentaires sur 2 colonnes -->
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label>
-                            <i class="fas fa-calendar-alt"></i>
-                            Date de naissance
-                        </label>
-                                            <div class="input-wrapper">
-                                                <input type="date" name="date_naissance" value="<%= typeof user !== 'undefined' && user ? (user.date_naissance || '') : '' %>">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>
-                            <i class="fas fa-venus-mars"></i>
-                            Genre
-                        </label>
-                                            <div class="input-wrapper">
-                                                <select name="genre">
+                <!-- Infos Supp -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-calendar-alt"></i> Date de naissance</label>
+                        <div class="input-wrapper">
+                            <input type="date" name="date_naissance" value="<%= u.date_naissance || '' %>">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-venus-mars"></i> Genre</label>
+                        <div class="input-wrapper">
+                            <select name="genre">
                                 <option value="">Sélectionnez</option>
-                                <option value="homme" <%= (typeof user !== 'undefined' && user && user.genre === 'homme') ? 'selected' : '' %>>Homme</option>
-                                <option value="femme" <%= (typeof user !== 'undefined' && user && user.genre === 'femme') ? 'selected' : '' %>>Femme</option>
-                                <option value="autre" <%= (typeof user !== 'undefined' && user && user.genre === 'autre') ? 'selected' : '' %>>Autre</option>
+                                <option value="homme" <%= u.genre === 'homme' ? 'selected' : '' %>>Homme</option>
+                                <option value="femme" <%= u.genre === 'femme' ? 'selected' : '' %>>Femme</option>
+                                <option value="autre" <%= u.genre === 'autre' ? 'selected' : '' %>>Autre</option>
                             </select>
-                                            </div>
-                                        </div>
-                                    </div>
+                        </div>
+                    </div>
+                </div>
 
-                                    <!-- Bio sur toute la largeur -->
-                                    <div class="form-group">
-                                        <label>
-                        <i class="fas fa-info-circle"></i>
-                        Bio / À propos
-                    </label>
-                                        <div class="input-wrapper">
-                                            <textarea name="bio" placeholder="Parlez-nous un peu de vous..."><%= typeof user !== 'undefined' && user ? (user.bio || '') : '' %></textarea>
-                                        </div>
-                                    </div>
+                <!-- Bio -->
+                <div class="form-group">
+                    <label><i class="fas fa-info-circle"></i> Bio / À propos</label>
+                    <div class="input-wrapper">
+                        <textarea name="bio" rows="4"><%= u.bio || '' %></textarea>
+                    </div>
+                </div>
 
-                                    <!-- Boutons d'action -->
-                                    <div class="form-actions">
-                                        <button type="submit" class="btn-save">
-                        <i class="fas fa-save"></i>
-                        Enregistrer
+                <!-- Actions -->
+                <div class="form-actions">
+                    <button type="submit" class="btn-save">
+                        <i class="fas fa-save"></i> Enregistrer
                     </button>
-
-                                        <button type="button" class="btn-cancel" onclick="window.history.back()">
-                        <i class="fas fa-times"></i>
+                    <button type="button" class="btn-cancel" onclick="window.history.back()">
                         Annuler
                     </button>
-                                    </div>
-                                </div>
-                            </form>
-        </div>
-    </section>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
 
-    <script>
-        // Aperçu de la photo avant téléchargement
-        const photoInput = document.getElementById('photoInput');
-        const profileImage = document.getElementById('profileImage');
+<script>
+    // Aperçu de la photo en temps réel
+    const photoInput = document.getElementById('photoInput');
+    const profileImage = document.getElementById('profileImage');
 
-        if (photoInput && profileImage) {
-            photoInput.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        profileImage.src = e.target.result;
-                    }
-                    reader.readAsDataURL(file);
-                }
-            });
-        }
-    </script>
+    if (photoInput && profileImage) {
+        photoInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => profileImage.src = e.target.result;
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+</script>
 
-    <%-include('partials/footer')%>

@@ -1,21 +1,26 @@
+<link rel="stylesheet" href="style/register.css">
 <%-include('partials/header')%>
     <section class="register">
         <h1>Enregistrement</h1>
         <form action="" method='post'>
             <div class="photo">
-                <input type="image">
+                <input type="image" name="photo">
             </div>
             <div class="input">
                 <i class="fa-solid fa-user"></i>
-                <input type="text" placeholder="Entrez votre nom" required>
+                <input type="text" placeholder="Entrez votre nom" required name="lastname">
             </div>
             <div class="input">
                 <i class="fa-solid fa-user"></i>
-                <input type="text" placeholder="Entrez votre prenom">
+                <input type="text" placeholder="Entrez votre prenom" name="middlename">
             </div>
             <div class="input">
                 <i class="fa-solid fa-mobile-screen-button"></i>
-                <input type="tel" placeholder="Entrez Numero de telephone" required>
+                <input type="tel" placeholder="Entrez Numero de telephone" required name="number">
+            </div>
+            <div class="input">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" placeholder="Mot de passe" required name="mdpass">
             </div>
             <button type="submit">Envoyer</button>
         </form>

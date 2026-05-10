@@ -135,3 +135,16 @@
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(58, 177, 253, 0.3);
 }
+form button{
+    padding: .5rem;
+    background: var(--secondary-color);
+    border: none;
+    border-radius: 1rem;
+    -webkit-border-radius: 1rem;
+    -moz-border-radius: 1rem;
+    -ms-border-radius: 1rem;
+    -o-border-radius: 1rem;
+    cursor: pointer;
+    color: var(--bg-light);
+    font-weight: 500;
+}

@@ -9,7 +9,7 @@
         height: 60px;
         flex-direction: row;
         justify-content: space-around;
-        padding: 0;
+       
         z-index: 100;
         border-right: none;
         border-top: 1px solid var(--border-color);
@@ -25,6 +25,7 @@
         justify-content: space-around;
         gap: 0;
     }
+
 
     main {
         flex-direction: column;
