@@ -1,16 +1,14 @@
-
 <style>
     :root {
         --bg-color: #ffffff;
         --secondary-color: #3ab1fd;
         --txt-color: #000000;
-        --txt-descr: #666666; /* Gris doux pour les descriptions */
+        --txt-descr: #666666;
         --bg-light: #f5f7f9;
         --border-color: #eeeeee;
         --shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
     }
 
-    /* --- Styles Généraux & Layout --- */
     * {
         margin: 0;
         padding: 0;
@@ -43,15 +41,12 @@
         box-shadow: var(--shadow);
         overflow: hidden;
         animation: fadeIn 0.6s ease-out;
+        padding: 2.5rem;
     }
 
     @keyframes fadeIn {
         from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
-    }
-
-    form {
-        padding: 2.5rem;
     }
 
     .profile-header {
@@ -60,169 +55,144 @@
     }
 
     .profile-header h1 {
-        font-size: 24px;
+        font-size: 28px;
         color: var(--txt-color);
         margin-bottom: 0.5rem;
     }
 
-    .profile-header p {
-        color: var(--txt-descr);
-        font-size: 14px;
-    }
-
-    /* --- Section Photo --- */
-    .photo-section {
+    .profile-photo {
         display: flex;
-        flex-direction: column;
-        align-items: center;
+        justify-content: center;
         margin-bottom: 2rem;
     }
 
-    .profile-photo {
-        position: relative;
-        cursor: pointer;
-        transition: transform 0.3s ease;
-    }
-
-    .profile-photo:hover {
-        transform: scale(1.02);
-    }
-
     .profile-photo img {
-        width: 120px;
-        height: 120px;
+        width: 150px;
+        height: 150px;
         border-radius: 50%;
         object-fit: cover;
         border: 4px solid var(--secondary-color);
-        padding: 3px;
         background: white;
     }
 
-    .photo-overlay {
+    .info-group {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .info-group label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--txt-descr);
+        text-transform: uppercase;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .info-group p {
+        font-size: 16px;
+        color: var(--txt-color);
+        font-weight: 500;
+    }
+
+    .btn-retour {
+        display: inline-block;
+        margin-top: 2rem;
+        padding: 12px 24px;
+        background: var(--secondary-color);
+        color: white;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: opacity 0.3s;
+        width: 100%;
+        text-align: center;
+    }
+
+    .btn-retour:hover {
+        opacity: 0.9;
+    }
+    /* Conteneur principal pour centrer */
+    .photo_content {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    /* Conteneur de la photo avec position relative */
+    .profile-container {
+        position: relative;
+        width: 150px;
+        height: 150px;
+    }
+
+    /* La photo ronde */
+    .profile-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Important pour ne pas déformer l'image */
+        border-radius: 50%;
+        border: 4px solid #fff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Le bouton de modification (le petit cercle bleu) */
+    .upload-btn {
         position: absolute;
         bottom: 5px;
         right: 5px;
-        background: var(--secondary-color);
-        width: 35px;
-        height: 35px;
+        background-color: #007bff;
+        color: white;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
         display: flex;
+        align-items: center;
         justify-content: center;
-        align-items: center;
-        color: white;
-        border: 3px solid white;
-        font-size: 14px;
-    }
-
-    .photo-input { display: none; }
-
-    /* --- Grille du Formulaire --- */
-    .form-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-    }
-
-    .form-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    .form-group label {
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--txt-descr);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .form-group label i {
-        color: var(--secondary-color);
-    }
-
-    .input-wrapper input, 
-    .input-wrapper select, 
-    .input-wrapper textarea {
-        width: 100%;
-        padding: 12px 16px;
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        background: var(--bg-light);
-        font-size: 14px;
-        outline: none;
-        transition: all 0.3s ease;
-    }
-
-    .input-wrapper input:focus, 
-    .input-wrapper select:focus, 
-    .input-wrapper textarea:focus {
-        border-color: var(--secondary-color);
-        background: #fff;
-        box-shadow: 0 0 0 4px rgba(58, 177, 253, 0.1);
-    }
-
-    /* --- Boutons d'action --- */
-    .form-actions {
-        display: flex;
-        gap: 1rem;
-        margin-top: 1rem;
-    }
-
-    .btn-save {
-        flex: 2;
-        background: var(--secondary-color);
-        color: white;
-        border: none;
-        padding: 14px;
-        border-radius: 12px;
-        font-weight: 600;
         cursor: pointer;
-        transition: opacity 0.3s;
+        border: 3px solid #fff;
+        transition: transform 0.2s, background 0.3s;
     }
 
-    .btn-cancel {
-        flex: 1;
-        background: white;
-        border: 1px solid var(--border-color);
-        padding: 14px;
-        border-radius: 12px;
-        cursor: pointer;
-        color: var(--txt-descr);
-        transition: background 0.3s;
+    .upload-btn:hover {
+        background-color: #0056b3;
+        transform: scale(1.1);
     }
 
-    .btn-save:hover { opacity: 0.9; }
-    .btn-cancel:hover { background: #f9f9f9; }
+    .upload-btn i {
+        font-size: 18px;
+    }
 
-    /* Responsive */
     @media (max-width: 600px) {
-        .form-row {
-            grid-template-columns: 1fr;
+        .profile-card {
+            padding: 1.5rem;
         }
-        .profile-section {
-            padding: 1rem;
+        .profile-header h1 {
+            font-size: 24px;
         }
     }
-
 </style>
 
 <%-include('partials/header')%>
 
 <div class="profile-section">
     <div class="profile-card">
-        <div class="profile-photo">
-            <img src="<%= userProfile.photo || '/photos/default.png' %>" alt="Profil">
+        <div class="profile-header">
+            <h1>Mon Profil</h1>
         </div>
 
-        <h1>Mon Profil</h1>
+        <div class="photo_content">
+            <div class="profile-container">
+                <!-- L'image de profil -->
+                <img src="<%= userProfile || '/photos/default.png' %>" alt="Photo de profil" class="profile-img" id="preview">
+                
+                <!-- Le bouton de modification superposé -->
+                <label for="file-input" class="upload-btn">
+                    <i class="fa-solid fa-camera"></i>
+                </label>
+                <input type="file" id="file-input" name="photo" accept="image/*" hidden>
+            </div>
+        </div>
 
         <div class="info-group">
             <label>Nom</label>
@@ -242,116 +212,16 @@
         <a href="/index" class="btn-retour">← Retour au chat</a>
     </div>
 </div>
-
-<%-include('partials/footer')%>
-            <div class="profile-header">
-                <h1>Mon Profil</h1>
-                <p>Gérez vos informations personnelles</p>
-            </div>
-            <!-- Photo de profil -->
-            <div class="photo-section">
-                <label class="profile-photo" for="photoInput">
-                    <img src="<%= photoUrl %>" alt="Photo de profil" id="profileImage">
-                    <div class="photo-overlay">
-                        <i class="fas fa-camera"></i>
-                    </div>
-                </label>
-                <input type="file" id="photoInput" class="photo-input" accept="image/*" name="photo">
-                <p style="margin-top: 12px; color: var(--txt-descr); font-size: 12px;">
-                    <i class="fas fa-info-circle"></i> Cliquez sur la photo pour la modifier
-                </p>
-            </div>
-
-            <div class="form-grid">
-                <!-- Nom et Prénom -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label><i class="fas fa-user"></i> Nom</label>
-                        <div class="input-wrapper">
-                            <input type="text" name="nom" value="<%= u.nom || '' %>" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-user-friends"></i> Prénom(s)</label>
-                        <div class="input-wrapper">
-                            <input type="text" name="prenom" value="<%= u.prenom || '' %>">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Contact -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label><i class="fas fa-mobile-alt"></i> Téléphone</label>
-                        <div class="input-wrapper">
-                            <input type="tel" name="telephone" value="<%= u.telephone || '' %>" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-envelope"></i> Email</label>
-                        <div class="input-wrapper">
-                            <input type="email" name="email" value="<%= u.email || '' %>">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Infos Supp -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label><i class="fas fa-calendar-alt"></i> Date de naissance</label>
-                        <div class="input-wrapper">
-                            <input type="date" name="date_naissance" value="<%= u.date_naissance || '' %>">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-venus-mars"></i> Genre</label>
-                        <div class="input-wrapper">
-                            <select name="genre">
-                                <option value="">Sélectionnez</option>
-                                <option value="homme" <%= u.genre === 'homme' ? 'selected' : '' %>>Homme</option>
-                                <option value="femme" <%= u.genre === 'femme' ? 'selected' : '' %>>Femme</option>
-                                <option value="autre" <%= u.genre === 'autre' ? 'selected' : '' %>>Autre</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Bio -->
-                <div class="form-group">
-                    <label><i class="fas fa-info-circle"></i> Bio / À propos</label>
-                    <div class="input-wrapper">
-                        <textarea name="bio" rows="4"><%= u.bio || '' %></textarea>
-                    </div>
-                </div>
-
-                <!-- Actions -->
-                <div class="form-actions">
-                    <button type="submit" class="btn-save">
-                        <i class="fas fa-save"></i> Enregistrer
-                    </button>
-                    <button type="button" class="btn-cancel" onclick="window.history.back()">
-                        Annuler
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
-</section>
-
 <script>
-    // Aperçu de la photo en temps réel
-    const photoInput = document.getElementById('photoInput');
-    const profileImage = document.getElementById('profileImage');
-
-    if (photoInput && profileImage) {
-        photoInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => profileImage.src = e.target.result;
-                reader.readAsDataURL(file);
-            }
-        });
-    }
+    document.getElementById('file-input').addEventListener('change', function(e) {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                document.getElementById('preview').src = event.target.result;
+            };
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
 </script>
+<%-include('partials/footer')%>
 

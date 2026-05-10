@@ -78,7 +78,7 @@ io.on("connection", (socket) => {
   });
 });
 app.get("/register", (req, res) => {
-  res.render("register");
+  res.render("register",{});
 });
 
 app.post("/register", (req, res) => {

@@ -33,7 +33,10 @@
         <section class="contents">
             <div class="center" id="center">
                 <div class="top">
-                    <h1>Chat</h1>
+                    <div class="headertop" style="display: flex; justify-content: space-between; align-items: center;">
+                        <h1>Chat</h1>
+                        <button style="display: flex;border: none; border-radius: 50%; width:30px;height:30px;display:flex; justify-content: center; align-items: center;" id="aj_contact"><i class="fa-solid fa-plus"></i></button>
+                    </div>
                     <div class="input">
                         <input type="text">
                         <i class="fa-solid fa-magnifying-glass"></i>
@@ -59,7 +62,7 @@
                     <div class="boxs">
                         <% if (onlineUsers && onlineUsers.length > 0) { %>
                             <% onlineUsers.forEach(user => { %>
-                                <div class="box" onclick="selectChat('<%= user.username %>', '<%= user.photo || 'https://tse4.mm.bing.net/th/id/OIP.Yh_Zd0cdrtxGpEjqC0tq6QHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3' %>')">
+                                <div class="box chat-box" onclick="selectChat('<%= user.username %>', '<%= user.photo %>')">
                                     <div class="profil">
                                         <img src="<%= user.photo || 'https://tse4.mm.bing.net/th/id/OIP.Yh_Zd0cdrtxGpEjqC0tq6QHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3' %>" alt="<%= user.username %>">
                                         <div class="nom">
@@ -78,18 +81,38 @@
                         <% } %>
                     </div>
                 </div>
+                <div class="contactbox">
+                    <h2>Contact</h2>
+                    <form action="">
+                        <div class="input">
+                            <input type="text" placeholder="Nom">
+                        </div>
+                        <div class="input">
+                            <input type="text" placeholder="Prénom">
+                        </div>
+                        <div class="input">
+                            <input type="text" placeholder="Numéro de téléphone">
+                        </div>
+                        <button type="submit">Ajouter</button>
+                        <a href="" id="closeContactForm">Fermer</a>
+                    </form>
+                </div>
             </div>
             <div class="chat">
-                <div class="header">
-                    <div class="left">
-                        <img id="chatUserPhoto" src="/photos/default.png" alt="">
-                        <div class="text">
-                            <p class="nom prenom" id="chatUserName">Discussion Générale</p>
-                            <p class="status" id="chatUserStatus">Hors ligne</p>
-                        </div>
+                <!-- Dans la div class="chat" -->
+        <div class="header">
+            <div class="left">
+                    <!-- AJOUTE CE BOUTON ICI -->
+                    <button id="backToList" class="mobile-back-btn" style="border: none; padding:.5rem;"><i class="fa-solid fa-arrow-left"></i></button>
+                    
+                    <img id="chatUserPhoto" src="/photos/default.png" alt="">
+                    <div class="text">
+                        <p class="nom prenom" id="chatUserName">Discussion Générale</p>
+                        <p class="status" id="chatUserStatus">Hors ligne</p>
                     </div>
-                    <a href="tel:" id="chatUserPhone" class="telephone"><i class="fa-solid fa-phone-flip"></i></a>
                 </div>
+                <a href="tel:" id="chatUserPhone" class="telephone"><i class="fa-solid fa-phone-flip"></i></a>
+            </div>
                 <div class="message" id="message">
                     <% if (messages && messages.length > 0) { %>
                         <% messages.forEach(msg => { %>
@@ -100,17 +123,22 @@
                         <% }); %>
                     <% } %>
                 </div>
-                <form action="" method="post" id="formEnvoy" class="d-flex align-items-center gap-2 p-3">
+                <form action="" method="post" id="formEnvoy" class="d-flex align-items-center gap-2 p-3" class="form_sms">
                     <input type="text" placeholder="Ecrire" required id="Message" class="form-control flex-grow-1 rounded-pill">
                     <button type="submit" class="btn btn-primary px-4 rounded-pill flex-shrink-0">Envoyer</button>
                     <button><i class="fa-solid fa-trash"></i></button>
                 </form>
+                
             </div>
         </section>
     </main>
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
+       const close_contact_form=document.querySelector('#closeContactForm')
+        const footernav=document.querySelector('header')
+        const nouveau_contact_btn=document.querySelector('#aj_contact')
+        const contact_form=document.querySelector('.contactbox')
         const form = document.querySelector('#formEnvoy');
         const messageInput = document.getElementById('Message');
         const bodychat = document.getElementById('message');
@@ -121,30 +149,42 @@
         let currentChatUser = null;
 
         // Récupérer la liste des utilisateurs en ligne une seule fois
-        const onlineList = <%- JSON.stringify(onlineUsers || []) %>;
+        const onlineList = JSON.parse('<%- JSON.stringify(onlineUsers || []) %>');
 
         // Fonction pour sélectionner un chat
-        function selectChat(username, photo) {
-            currentChatUser = username;
-            userNameDisplay.textContent = username;
-            userPhotoDisplay.src = photo;
-            userPhoneDisplay.href = 'tel:+243';
+        // 1. Sélectionne les éléments nécessaires
+        const backBtn = document.getElementById('backToList');
+        const centerCol = document.getElementById('center');
+        const chatCol = document.querySelector('.chat');
 
-            // Vérifier si l'utilisateur sélectionné est en ligne
-            const isOnline = onlineList.some(u => u.username === username);
+// 2. Modifie la fonction selectChat
+    function selectChat(username, photo) {
+        currentChatUser = username;
+        userNameDisplay.textContent = username;
+        userPhotoDisplay.src = photo;
+        userPhoneDisplay.href = 'tel:+243';
 
-            if (isOnline) {
-                userStatusDisplay.textContent = "En ligne";
-                userStatusDisplay.classList.add('online');
-                userStatusDisplay.classList.remove('offline');
-            } else {
-                userStatusDisplay.textContent = "Hors ligne";
-                userStatusDisplay.classList.add('offline');
-                userStatusDisplay.classList.remove('online');
-            }
+        const isOnline = onlineList.some(u => u.username === username);
+        userStatusDisplay.textContent = isOnline ? "En ligne" : "Hors ligne";
+        userStatusDisplay.className = 'status ' + (isOnline ? 'online' : 'offline');
 
-            console.log('Chat sélectionné avec:', username, 'Statut:', isOnline ? 'En ligne' : 'Hors ligne');
+        // --- LOGIQUE MOBILE ---
+        if (window.innerWidth < 1000) {
+            centerCol.style.display = 'none'; // Cache la liste
+            chatCol.style.display = 'flex';   // Affiche le chat (flex car c'est souvent le cas pour les chatbox)
+            footernav.classList.add('hide_header'); // Cache ton menu du bas pour gagner de l'espace
         }
+
+    }
+
+    // 3. Ajoute l'événement pour le bouton retour
+    if(backBtn) {
+        backBtn.addEventListener('click', () => {
+            centerCol.style.display = 'block'; // Réaffiche la liste
+            chatCol.style.display = 'none';    // Cache le chat
+            footernav.classList.remove('hide_header'); // Réaffiche le menu
+        });
+    }
 
         form.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -179,6 +219,17 @@
             bodychat.appendChild(p);
             bodychat.scrollTop = bodychat.scrollHeight;
         });
+        nouveau_contact_btn.addEventListener('click',()=>{
+            contact_form.classList.add('contactbox_open');
+            footernav.classList.add('hide_header')
+            rgba.classList.add('closergba')
+        })
+      close_contact_form.addEventListener('click',(e)=>{
+        e.preventDefault()
+        contact_form.classList.remove('contactbox_open');
+        footernav.classList.remove('hide_header')
+      })
+        
     </script>
  <%-include('partials/footer')%>
  

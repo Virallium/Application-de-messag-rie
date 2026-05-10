@@ -263,7 +263,7 @@ header nav .div a p {
     100% { opacity: 0; visibility: hidden; }
 }
 
-form{
+.form_sms{
     position: absolute;
     bottom: 0;
     right: 0;
@@ -326,4 +326,110 @@ form button{
 
 .status.offline {
     color: #95a5a6; /* Gris */
+}
+/* Conteneur principal */
+.contactbox {
+    position:absolute; 
+    bottom:-100%;
+    left:0;
+    border-top-right-radius:5rem;
+    border-top-left-radius:5rem;
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 450px; /* Ajuste selon tes besoins */
+    padding: 2rem;
+    box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    z-index: 100;
+}
+.contactbox_open{
+    bottom: 0;
+    transition: .8s ease;
+    -webkit-transition: .8s ease;
+    -moz-transition: .8s ease;
+    -ms-transition: .8s ease;
+    -o-transition: .8s ease;
+}
+
+.hide_header{
+    opacity: 0;
+    visibility: hidden;
+    transition: .5s ease;
+    -webkit-transition: .5s ease;
+    -moz-transition: .5s ease;
+    -ms-transition: .5s ease;
+    -o-transition: .5s ease;
+}
+/* Titre */
+.contactbox h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #333;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+/* Structure du formulaire */
+.contactbox form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Conteneur des inputs */
+.contactbox .input {
+    width: 100%;
+}
+
+/* Style des champs de saisie */
+.contactbox input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 2rem; /* Style pilule pour coller aux arrondis du box */
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+}
+
+/* Effet au survol et focus de l'input */
+.contactbox input:focus {
+    border-color: #3498db;
+    background-color: #fff;
+    box-shadow: 0 0 8px rgba(52, 152, 219, 0.2);
+}
+
+/* Style du bouton */
+.contactbox button {
+    margin-top: 0.5rem;
+    padding: 0.8rem;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 2rem;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Effets du bouton */
+.contactbox button:hover {
+    background-color: #2980b9;
+}
+
+.contactbox button:active {
+    transform: scale(0.98);
+}
+.mobile-back-btn {
+    display: none;
+    border: none;
+    background: none;
+    font-size: 1.2rem;
+    margin-right: 10px;
+    cursor: pointer;
+    color: #333;
 }

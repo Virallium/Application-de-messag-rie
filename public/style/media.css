@@ -1,5 +1,40 @@
 /* --- RESPONSIVE DESIGN --- */
+@media (max-width: 1000px) {
+    /* On affiche le bouton retour sur mobile */
+    .mobile-back-btn {
+        display: block;
+    }
+    .contents {
+        width: 100%;
+    }
 
+    /* La section contents doit occuper tout l'écran */
+    .contents {
+        display: block; /* On passe de flex à block pour empiler */
+        height: 100vh;
+    }
+
+    /* Au chargement, le chat est caché sur mobile */
+    .chat {
+        display: none; 
+        width: 100% !important;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 999;
+        background: white;
+    }
+
+    #center {
+        width: 100% !important;
+    }
+    
+    /* On cache le header quand le chat est ouvert via la classe que tu as déjà */
+    .hide_header {
+        display: none !important;
+    }
+}
 @media (max-width: 900px) {
     /* On cache la barre latérale étroite pour gagner de la place */
     header {
@@ -31,9 +66,6 @@
         flex-direction: column;
     }
 
-    .contents {
-        width: 100%;
-    }
 
     /* j'ai réduit la liste des contacts pour laisser de la place au chat */
     .center {
@@ -49,7 +81,11 @@
         z-index: 50;
         display: none; /* j'ai masqué par défaut sur petit écran */
     }
+    .contactbox {
+        width: 100%;
+        max-width: none;
 
+    }
 }
 
 @media (max-width: 500px) {
