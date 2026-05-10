@@ -42,44 +42,63 @@
                 <div class="enligne">
                     <h2>En ligne</h2>
                     <div class="box">
-                        <div class="img">
-                            <img src="" alt="">
-                            <p></p>
-                        </div>
+                        <% if (onlineUsers && onlineUsers.length > 0) { %>
+                            <% onlineUsers.forEach(user => { %>
+                                <div class="img">
+                                    <img src="<%= user.photo || '/photos/default.png' %>" alt="<%= user.username %>">
+                                    <p><%= user.username %></p>
+                                </div>
+                            <% }); %>
+                        <% } else { %>
+                            <p>Aucun utilisateur en ligne</p>
+                        <% } %>
                     </div>
                 </div>
                 <div class="allchat">
                     <h2>Tous les chats</h2>
                     <div class="boxs">
-                        <div class="box">
-                            <div class="profil">
-                                <img src="" alt="">
-                                <div class="nom">
-                                    <p class="nom"></p>
-                                    <p class="prenom"></p>
+                        <% if (onlineUsers && onlineUsers.length > 0) { %>
+                            <% onlineUsers.forEach(user => { %>
+                                <div class="box" onclick="selectChat('<%= user.username %>', '<%= user.photo || '/photos/default.png' %>')">
+                                    <div class="profil">
+                                        <img src="<%= user.photo || '/photos/default.png' %>" alt="<%= user.username %>">
+                                        <div class="nom">
+                                            <p class="nom"><%= user.username %></p>
+                                            <p class="prenom"><%= user.middlename || 'Pas de prénom' %></p>
+                                        </div>
+                                    </div>
+                                    <div class="right">
+                                        <div class="date"><%= new Date().toLocaleDateString('fr-FR') %></div>
+                                        <div class="vu_ou_non">✓✓</div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="right">
-                                <div class="date"></div>
-                                <div class="vu_ou_non"></div>
-                            </div>
-                        </div>
+                            <% }); %>
+                        <% } else { %>
+                            <p>Aucun chat disponible</p>
+                        <% } %>
                     </div>
                 </div>
             </div>
             <div class="chat">
                 <div class="header">
                     <div class="left">
-                        <img src="" alt="">
+                        <img id="chatUserPhoto" src="/photos/default.png" alt="">
                         <div class="text">
-                            <p class="nom prenom"></p>
-                            <p class="status"></p>
+                            <p class="nom prenom" id="chatUserName">Discussion Générale</p>
+                            <p class="status">Actif</p>
                         </div>
                     </div>
-                    <a href="" class="telephone"><i class="fa-solid fa-phone-flip"></i></a>
+                    <a href="tel:" id="chatUserPhone" class="telephone"><i class="fa-solid fa-phone-flip"></i></a>
                 </div>
                 <div class="message" id="message">
-                    
+                    <% if (messages && messages.length > 0) { %>
+                        <% messages.forEach(msg => { %>
+                            <div class="boxsms <%= msg.username === user.username ? 'sms-sent' : 'sms-received' %>">
+                                <span class="sms-content"><strong><%= msg.username %>:</strong> <%= msg.content %></span>
+                                <small class="sms-date"><%= new Date(msg.created_at).toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'}) %></small>
+                            </div>
+                        <% }); %>
+                    <% } %>
                 </div>
                 <form action="" method="post" id="formEnvoy" class="d-flex align-items-center gap-2 p-3">
                     <input type="text" placeholder="Ecrire" required id="Message" class="form-control flex-grow-1 rounded-pill">
@@ -94,13 +113,28 @@
         const form = document.querySelector('#formEnvoy');
         const messageInput = document.getElementById('Message');
         const bodychat = document.getElementById('message');
+        const userNameDisplay = document.getElementById('chatUserName');
+        const userPhoneDisplay = document.getElementById('chatUserPhone');
+        const userPhotoDisplay = document.getElementById('chatUserPhoto');
+        let currentChatUser = null;
+
+        // Fonction pour sélectionner un chat
+        function selectChat(username, photo) {
+            currentChatUser = username;
+            userNameDisplay.textContent = username;
+            userPhotoDisplay.src = photo;
+            userPhoneDisplay.href = 'tel:+243';
+            console.log('Chat sélectionné avec:', username);
+        }
 
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-            if ( messageInput.value !== "") {
+            if (messageInput.value !== "") {
                 const data = {
+                    name: '<%= user.username %>',
                     message: messageInput.value,
-                    date:new Date().toLocaleDateString()
+                    date: new Date().toLocaleDateString(),
+                    senderId: socket.id
                 };
                 socket.emit('chat', data);
                 messageInput.value = "";
@@ -114,11 +148,11 @@
             const date = document.createElement('small');
 
             p.classList.add('boxsms');
-            p.classList.add(data.senderId === socket.id ? 'sms-sent' : 'sms-received');
+            p.classList.add(data.name === '<%= user.username %>' ? 'sms-sent' : 'sms-received');
             message.classList.add('sms-content');
             date.classList.add('sms-date');
 
-            message.textContent = data.message;
+            message.innerHTML = `<strong>${data.name}:</strong> ${data.message}`;
             date.textContent = data.date;
 
             p.appendChild(message);

@@ -1,5 +1,66 @@
 
-<style>
+<%-include('partials/header')%>
+<main>
+    <header>
+        <div class="logo"><img src="/photos/logo.png" alt="logo" width="130px"></div>
+        <nav>
+            <div class="div">
+                <a href="/index">
+                    <i class="fa-regular fa-comment"></i>
+                    <p>Discussion</p>
+                </a>
+            </div>
+            <div class="div">
+                <a href="/archive">
+                    <i class="fa-solid fa-box-archive"></i>
+                    <p>Archives</p>
+                </a>
+            </div>
+            <div class="div">
+                <a href="/profil" class="active">
+                    <i class="fa-solid fa-user-pen"></i>
+                    <p>Profil</p>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="profile-section">
+        <div class="profile-card">
+            <div class="profile-header">
+                <h1>Mon Profil</h1>
+                <p>Gérez vos informations personnelles</p>
+            </div>
+            <form>
+                <div class="photo-section">
+                    <div class="profile-photo">
+                        <img src="<%= userProfile.photo || '/photos/default.png' %>" alt="Profil">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Nom</label>
+                    <input type="text" value="<%= userProfile.username || '' %>" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Prénom</label>
+                    <input type="text" value="<%= userProfile.middlename || '' %>" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Numéro de téléphone</label>
+                    <input type="tel" value="<%= userProfile.number || '' %>" readonly>
+                </div>
+
+                <div class="form-actions">
+                    <a href="/index" class="btn-secondary">Retour au chat</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+<%-include('partials/footer')%>
     :root {
         --bg-color: #ffffff;
         --secondary-color: #3ab1fd;

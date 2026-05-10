@@ -32,7 +32,7 @@ main {
     height: 100vh;
 }
 
-/* --- Barre latérale Gauche (Header/Nav) --- */
+
 header {
     width: 80px;
     background-color: var(--bg-color);
@@ -40,6 +40,7 @@ header {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding:1rem 0;
 }
 
 header .logo {

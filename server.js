@@ -56,7 +56,7 @@ db.run(`
     middlename TEXT,
     number TEXT UNIQUE,
     password TEXT,
-    photo TEXT ,
+    photo TEXT 
   )`, (err) => {
     if (err) console.log("Erreur table users:", err.message);
     else console.log("Table users prête.");
@@ -135,18 +135,44 @@ app.post("/login", (req, res) => {
   );
 });
 app.get("/archive", (req, res) => {
-  res.render("archive", {
-    nom: "",
-    msg: "message",
+  if (!req.session.user) return res.redirect("/");
+  
+  // Récupérer le profil complet
+  db.get("SELECT * FROM users WHERE id = ?", [req.session.user.id], (err, userProfile) => {
+    if (err || !userProfile) {
+      userProfile = req.session.user;
+    }
+
+    // Récupérer tous les messages
+    db.all(
+      "SELECT * FROM messages ORDER BY created_at DESC", 
+      [], 
+      (err, messages) => {
+        res.render("archive", { 
+          user: req.session.user,
+          userProfile: userProfile,
+          messages: messages || []
+        });
+      }
+    );
   });
 });
 
 app.get("/profil", (req, res) => {
-  res.render("profil", {
-    photo: "photo",
-    nom: "nom",
-    prenom: "prenom",
-    descr: "descr",
+  if (!req.session.user) return res.redirect("/");
+  
+  db.get("SELECT * FROM users WHERE id = ?", [req.session.user.id], (err, userProfile) => {
+    if (err || !userProfile) {
+      return res.render("profil", {
+        user: req.session.user,
+        userProfile: req.session.user
+      });
+    }
+
+    res.render("profil", {
+      user: req.session.user,
+      userProfile: userProfile
+    });
   });
 });
 
@@ -157,15 +183,26 @@ app.get("/groupe", (req, res) => {
   });
 });
 app.get("/index", (req, res) => {
-  if (!req.session.user) return res.redirect("/"); 
-    //affichage des 50 derniers messages
-  db.all("SELECT * FROM messages ORDER BY created_at ASC LIMIT 50", [], (err, rows) => {
+  if (!req.session.user) return res.redirect("/");
+
+  db.all("SELECT * FROM messages ORDER BY created_at ASC LIMIT 50", [], (err, messages) => {
     if (err) {
       console.error(err.message);
-      return res.render("index", { user: req.session.user, messages: [] });
+      return res.render("index", { user: req.session.user, messages: [], onlineUsers: [] });
     }
-   
-    res.render("index", { user: req.session.user, messages: rows });
+
+    db.all("SELECT username, photo FROM users", [], (err, users) => {
+      if (err) {
+        console.error(err.message);
+        return res.render("index", { user: req.session.user, messages: messages, onlineUsers: [] });
+      }
+
+      res.render("index", { 
+        user: req.session.user, 
+        messages: messages || [], 
+        onlineUsers: users || [] 
+      });
+    });
   });
 });
 server.listen(3000, () => {

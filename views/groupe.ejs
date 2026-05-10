@@ -44,30 +44,37 @@
                     </div>
                 </div>
                 <div class="allchat">
-                    <h2>Communautés</h2>
+                    <h2>Membres du groupe (<%= memberCount || 0 %>)</h2>
                     <div class="boxs">
-                        <div class="box">
-                            <div class="profil">
-                                <div class="nom">
-                                    <p class="nom"></p>
-                                    <p class="prenom"></p>
+                        <% if (members && members.length > 0) { %>
+                            <% members.forEach(member => { %>
+                                <div class="box">
+                                    <div class="profil">
+                                        <img src="<%= member.photo || '/photos/default.png' %>" alt="<%= member.username %>">
+                                        <div class="nom">
+                                            <p class="nom"><%= member.username %></p>
+                                            <p class="prenom"><%= member.middlename || 'Pas de prénom' %></p>
+                                        </div>
+                                    </div>
+                                    <div class="right">
+                                        <div class="date"><%= member.number %></div>
+                                        <div class="vu_ou_non">✓</div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="right">
-                                <div class="date"></div>
-                                <div class="vu_ou_non"></div>
-                            </div>
-                        </div>
+                            <% }); %>
+                        <% } else { %>
+                            <p>Aucun membre</p>
+                        <% } %>
                     </div>
                 </div>
             </div>
             <div class="chat">
                 <div class="header">
                     <div class="left">
-                        <img src="" alt="">
+                        <img src="/photos/logoanim.png" alt="Groupe">
                         <div class="text">
-                            <p class="nom prenom"></p>
-                            <p class="status"></p>
+                            <p class="nom prenom"><%= groupName %></p>
+                            <p class="status"><%= memberCount %> membres</p>
                         </div>
                     </div>
                     <a href="" class="telephone"><i class="fa-solid fa-phone-flip"></i></a>
