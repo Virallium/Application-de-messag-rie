@@ -102,6 +102,22 @@ db.run(
 
 db.run(
   `
+  CREATE TABLE IF NOT EXISTS groupe_members(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  groupe_id INTEGER,
+  username TEXT,
+  joined_at DATETIME DEFAULT CURRENT_TIMESTAMP)`,
+  (err) => {
+    if (err) {
+      console.log(err.message);
+      return;
+    }
+    console.log("la table groupe_members est créée avec succès");
+  },
+);
+
+db.run(
+  `
   CREATE TABLE IF NOT EXISTS notifications(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   source TEXT,
@@ -115,6 +131,13 @@ db.run(
     console.log("la table notifications est créée avec succès");
   },
 );
+
+// Insert fake users
+db.run(`INSERT INTO users (username, contact, status) VALUES ('Noa', '0897456248', 'online')`);
+db.run(`INSERT INTO users (username, contact, status) VALUES ('Stella', '0856945623', 'offline')`);
+db.run(`INSERT INTO users (username, contact, status) VALUES ('Jacques', '0894781624', 'offline')`);
+db.run(`INSERT INTO users (username, contact, status) VALUES ('Cedric', '0855963147', 'online')`);
+db.run(`INSERT INTO users (username, contact, status) VALUES ('Mersein', '0891526654', 'online')`);
 
 io.on("connection", (socket) => {
   console.log("Un utilisateur s'est conncecté ");
@@ -158,7 +181,19 @@ app.post("/register", (req, res) => {
   res.redirect("/chat");
 });
 app.get("/", (req, res) => {
-  req.session.user = {};
+  db.all("SELECT * FROM users WHERE status = 'online'", (err, onlineUsers) => {
+    if (err) {
+      console.error(err);
+      onlineUsers = [];
+    }
+    db.all("SELECT * FROM users", (err, allUsers) => {
+      if (err) {
+        console.error(err);
+        allUsers = [];
+      }
+      res.render("index", { onlineUsers, users: allUsers });
+    });
+  });
 });
 app.get("archive/", (req, res) => {
   res.render("archive", {
@@ -185,11 +220,66 @@ app.get("/profil", (req, res) => {
   });
 });
 app.get("/groupe", (req, res) => {
-  res.render("groupe", {
-    nomgroupe: "nomgroupe",
-    membresgroupe: "membres_groupe",
+  db.all("SELECT * FROM groupes", (err, groupes) => {
+    if (err) {
+      console.error(err);
+      groupes = [];
+    }
+    res.render("groupe", {
+      groupes: groupes || [],
+      nomgroupe: "nomgroupe",
+      membresgroupe: "membres_groupe",
+    });
   });
 });
+
+app.post("/groupe/create", (req, res) => {
+  const nom_groupe = (req.body.nom_groupe || "").trim();
+  const username = req.session?.user?.name || "Invité";
+
+  if (!nom_groupe) {
+    return res.status(400).json({ error: "Le nom du groupe est requis." });
+  }
+
+  db.run(
+    `INSERT INTO groupes (nom_groupe, membres_groupe) VALUES (?, ?)`,
+    [nom_groupe, 1],
+    function (err) {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Impossible de créer le groupe." });
+      }
+
+      const groupeId = this.lastID;
+      db.run(
+        `INSERT INTO groupe_members (groupe_id, username) VALUES (?, ?)`,
+        [groupeId, username],
+        (memberErr) => {
+          if (memberErr) {
+            console.error(memberErr);
+            return res.status(500).json({ error: "Impossible d'ajouter le premier membre." });
+          }
+          res.json({ success: true, groupeId });
+        },
+      );
+    },
+  );
+});
+
+// Route pour chercher les groupes
+app.get("/api/search-groups", (req, res) => {
+  const searchQuery = req.query.q || "";
+  
+  const query = `SELECT * FROM groupes WHERE nom_groupe LIKE ? ORDER BY nom_groupe ASC`;
+  db.all(query, [`%${searchQuery}%`], (err, groupes) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Erreur lors de la recherche" });
+    }
+    res.json(groupes || []);
+  });
+});
+
 server.listen(3000, () => {
   console.log("Le serveur est en marche");
 });

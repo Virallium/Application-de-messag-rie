@@ -116,10 +116,14 @@ header nav .div a p {
     padding: 0 25px 20px;
 }
 
+.online-list {
+    max-height: 200px; /* Ajustez selon besoin */
+    overflow-y: auto;
+}
+
 .enligne .box {
     display: flex;
     gap: 15px;
-    overflow-x: auto;
     padding-bottom: 10px;
 }
 

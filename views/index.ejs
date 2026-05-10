@@ -49,29 +49,35 @@
                 </div>
                 <div class="enligne">
                     <h2>En ligne</h2>
-                    <div class="box">
-                        <div class="img">
-                            <img src="" alt="">
-                            <p></p>
+                    <div class="online-list">
+                        <% onlineUsers.forEach(user => { %>
+                        <div class="box">
+                            <div class="img">
+                                <img src="" alt="">
+                                <p><%= user.username %></p>
+                            </div>
                         </div>
+                        <% }); %>
                     </div>
                 </div>
                 <div class="allchat">
-                    <h2>Tous les Messages</h2>
+                    <h2>Tous les Utilisateurs</h2>
                     <div class="boxs">
+                        <% users.forEach(user => { %>
                         <div class="box">
                             <div class="profil">
                                 <img src="" alt="">
                                 <div class="nom">
-                                    <p class="nom"></p>
-                                    <p class="prenom"></p>
+                                    <p class="nom"><%= user.username %></p>
+                                    <p class="prenom"><%= user.status %></p>
                                 </div>
                             </div>
                             <div class="right">
-                                <div class="date"></div>
+                                <div class="date"><%= user.contact %></div>
                                 <div class="vu_ou_non"></div>
                             </div>
                         </div>
+                        <% }); %>
                     </div>
                 </div>
             </div>
