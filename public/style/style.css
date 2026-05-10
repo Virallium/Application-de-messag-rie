@@ -319,3 +319,11 @@ form button{
     color: var(--bs-secondary-color);
     font-size: .75rem;
 }
+.status.online {
+    color: #2ecc71; /* Vert */
+    font-weight: bold;
+}
+
+.status.offline {
+    color: #95a5a6; /* Gris */
+}

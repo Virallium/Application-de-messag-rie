@@ -177,9 +177,23 @@ app.get("/profil", (req, res) => {
 });
 
 app.get("/groupe", (req, res) => {
-  res.render("groupe", {
-    nomgroupe: "nomgroupe",
-    membresgroupe: "membres_groupe",
+  if (!req.session.user) return res.redirect("/");
+  
+  db.get("SELECT * FROM users WHERE id = ?", [req.session.user.id], (err, userProfile) => {
+    if (err || !userProfile) {
+      userProfile = req.session.user;
+    }
+
+    // Récupérer tous les utilisateurs pour les afficher comme membres
+    db.all("SELECT id, username, middlename, photo, number FROM users", [], (err, members) => {
+      res.render("groupe", {
+        user: req.session.user,
+        userProfile: userProfile,
+        members: members || [],
+        groupName: "Groupe Général",
+        memberCount: (members || []).length
+      });
+    });
   });
 });
 app.get("/index", (req, res) => {

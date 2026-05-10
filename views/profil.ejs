@@ -214,15 +214,36 @@
 
 </style>
 
-<section class="profile-section">        
+<%-include('partials/header')%>
 
-        <% 
-            // Préparation des données pour éviter les erreurs undefined
-            let u = (typeof user !== 'undefined' && user) ? user : {};
-            let photoUrl = u.photo || `https://ui-avatars.com/api/?background=3ab1fd&color=fff&size=130&rounded=true&bold=true&name=${u.nom ? u.nom.charAt(0) : 'U'}`;
-        %>
+<div class="profile-section">
+    <div class="profile-card">
+        <div class="profile-photo">
+            <img src="<%= userProfile.photo || '/photos/default.png' %>" alt="Profil">
+        </div>
 
-        <form action="/profile/update" method="POST" enctype="multipart/form-data">
+        <h1>Mon Profil</h1>
+
+        <div class="info-group">
+            <label>Nom</label>
+            <p><%= userProfile.username || 'Non défini' %></p>
+        </div>
+
+        <div class="info-group">
+            <label>Prénom</label>
+            <p><%= userProfile.middlename || 'Non défini' %></p>
+        </div>
+
+        <div class="info-group">
+            <label>Numéro de téléphone</label>
+            <p><%= userProfile.number || 'Non défini' %></p>
+        </div>
+
+        <a href="/index" class="btn-retour">← Retour au chat</a>
+    </div>
+</div>
+
+<%-include('partials/footer')%>
             <div class="profile-header">
                 <h1>Mon Profil</h1>
                 <p>Gérez vos informations personnelles</p>

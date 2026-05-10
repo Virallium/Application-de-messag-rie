@@ -45,7 +45,7 @@
                         <% if (onlineUsers && onlineUsers.length > 0) { %>
                             <% onlineUsers.forEach(user => { %>
                                 <div class="img">
-                                    <img src="<%= user.photo || '/photos/default.png' %>" alt="<%= user.username %>">
+                                    <img src="<%= user.photo || 'https://tse4.mm.bing.net/th/id/OIP.Yh_Zd0cdrtxGpEjqC0tq6QHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3' %>" alt="<%= user.username %>">
                                     <p><%= user.username %></p>
                                 </div>
                             <% }); %>
@@ -59,7 +59,7 @@
                     <div class="boxs">
                         <% if (onlineUsers && onlineUsers.length > 0) { %>
                             <% onlineUsers.forEach(user => { %>
-                                <div class="box">
+                                <div class="box" onclick="selectChat('<%= user.username %>', '<%= user.photo || 'https://tse4.mm.bing.net/th/id/OIP.Yh_Zd0cdrtxGpEjqC0tq6QHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3' %>')">
                                     <div class="profil">
                                         <img src="<%= user.photo || 'https://tse4.mm.bing.net/th/id/OIP.Yh_Zd0cdrtxGpEjqC0tq6QHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3' %>" alt="<%= user.username %>">
                                         <div class="nom">
@@ -85,7 +85,7 @@
                         <img id="chatUserPhoto" src="/photos/default.png" alt="">
                         <div class="text">
                             <p class="nom prenom" id="chatUserName">Discussion Générale</p>
-                            <p class="status">Actif</p>
+                            <p class="status" id="chatUserStatus">Hors ligne</p>
                         </div>
                     </div>
                     <a href="tel:" id="chatUserPhone" class="telephone"><i class="fa-solid fa-phone-flip"></i></a>
@@ -103,6 +103,7 @@
                 <form action="" method="post" id="formEnvoy" class="d-flex align-items-center gap-2 p-3">
                     <input type="text" placeholder="Ecrire" required id="Message" class="form-control flex-grow-1 rounded-pill">
                     <button type="submit" class="btn btn-primary px-4 rounded-pill flex-shrink-0">Envoyer</button>
+                    <button><i class="fa-solid fa-trash"></i></button>
                 </form>
             </div>
         </section>
@@ -116,7 +117,11 @@
         const userNameDisplay = document.getElementById('chatUserName');
         const userPhoneDisplay = document.getElementById('chatUserPhone');
         const userPhotoDisplay = document.getElementById('chatUserPhoto');
+        const userStatusDisplay = document.getElementById('chatUserStatus');
         let currentChatUser = null;
+
+        // Récupérer la liste des utilisateurs en ligne une seule fois
+        const onlineList = <%- JSON.stringify(onlineUsers || []) %>;
 
         // Fonction pour sélectionner un chat
         function selectChat(username, photo) {
@@ -124,7 +129,21 @@
             userNameDisplay.textContent = username;
             userPhotoDisplay.src = photo;
             userPhoneDisplay.href = 'tel:+243';
-            console.log('Chat sélectionné avec:', username);
+
+            // Vérifier si l'utilisateur sélectionné est en ligne
+            const isOnline = onlineList.some(u => u.username === username);
+
+            if (isOnline) {
+                userStatusDisplay.textContent = "En ligne";
+                userStatusDisplay.classList.add('online');
+                userStatusDisplay.classList.remove('offline');
+            } else {
+                userStatusDisplay.textContent = "Hors ligne";
+                userStatusDisplay.classList.add('offline');
+                userStatusDisplay.classList.remove('online');
+            }
+
+            console.log('Chat sélectionné avec:', username, 'Statut:', isOnline ? 'En ligne' : 'Hors ligne');
         }
 
         form.addEventListener('submit', (e) => {
