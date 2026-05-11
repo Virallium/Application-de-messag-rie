@@ -61,7 +61,6 @@ db.run(`
     if (err) console.log("Erreur table users:", err.message);
     else console.log("Table users prête.");
 });
-
 io.on("connection", (socket) => {
   console.log("Un utilisateur s'est conncecté ");
   socket.on("chat", (data) => {
@@ -99,7 +98,7 @@ app.post("/register", (req, res) => {
 });
 // 1. Route pour afficher la page (sans détruire la session immédiatement)
 app.get("/", (req, res) => {
-  if (req.session.user) return res.redirect("/index"); // Si déjà connecté, on entre !
+  if (req.session.user) return res.redirect("/index"); 
   res.render("login");
 });
 
