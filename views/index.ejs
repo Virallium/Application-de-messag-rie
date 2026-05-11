@@ -27,6 +27,18 @@
                         <p>Profil</p>
                     </a>
                 </div>
+                <div class="div">
+                    <a href="/groupe">
+                        <i class="fa-solid fa-people-line"></i>
+                        <p>Groupe</p>
+                    </a>
+                </div>
+                <div class="div">
+                    <a href="/logout">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <p>Déconnexion</p>
+                    </a>
+                </div>
             </nav>
         </header>
         
@@ -35,7 +47,6 @@
                 <div class="top">
                     <div class="headertop" style="display: flex; justify-content: space-between; align-items: center;">
                         <h1>Chat</h1>
-                        <button style="display: flex;border: none; border-radius: 50%; width:30px;height:30px;display:flex; justify-content: center; align-items: center;" id="aj_contact"><i class="fa-solid fa-plus"></i></button>
                     </div>
                     <div class="input">
                         <input type="text">
@@ -114,14 +125,7 @@
                         <a href="tel:" id="chatUserPhone" class="telephone"><i class="fa-solid fa-phone-flip"></i></a>
                     </div>
                         <div class="message" id="message">
-                            <% if (messages && messages.length > 0) { %>
-                                <% messages.forEach(msg => { %>
-                                    <div class="boxsms <%= msg.username === user.username ? 'sms-sent' : 'sms-received' %>">
-                                        <span class="sms-content"><strong><%= msg.username %>:</strong> <%= msg.content %></span>
-                                        <small class="sms-date"><%= new Date(msg.created_at).toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'}) %></small>
-                                    </div>
-                                <% }); %>
-                            <% } %>
+                            <p style="padding:20px; color:#999;">Sélectionnez un utilisateur pour voir la conversation.</p>
                         </div>
                         <form action="" method="post" id="formEnvoy" class="d-flex align-items-center gap-2 p-3" class="form_sms">
                             <input type="text" placeholder="Ecrire" required id="Message" class="form-control flex-grow-1 rounded-pill">
@@ -147,35 +151,130 @@
         const userPhotoDisplay = document.getElementById('chatUserPhoto');
         const userStatusDisplay = document.getElementById('chatUserStatus');
         let currentChatUser = null;
+        let messagesCache = [];
+
+        // Rejoindre la room personnelle après connexion
+        socket.on('connect', () => {
+            socket.emit('join', '<%= user.username %>');
+        });
 
         // Récupérer la liste des utilisateurs en ligne une seule fois
-        const onlineList = JSON.parse('<%- JSON.stringify(onlineUsers || []) %>');
+        let onlineList = JSON.parse('<%- JSON.stringify(onlineUsers || []) %>');
+        renderUserList(onlineList);
+
+        function renderUserList(users) {
+            onlineList = users;
+            const onlineHtml = users.map(user => `
+                <div class="img" onclick="selectChat('${user.username}', '${user.photo || 'https://tse4.mm.bing.net/th/id/OIP.Yh_Zd0cdrtxGpEjqC0tq6QHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3'}')">
+                    <img src="${user.photo || 'https://tse4.mm.bing.net/th/id/OIP.Yh_Zd0cdrtxGpEjqC0tq6QHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3'}" alt="${user.username}">
+                    <p>${user.username}</p>
+                </div>
+            `).join('');
+            const onlineContainer = document.querySelector('.enligne .box');
+            if (onlineContainer) onlineContainer.innerHTML = onlineHtml || '<p>Aucun utilisateur en ligne</p>';
+
+            const chatsHtml = users.map(user => `
+                <div class="box chat-box" onclick="selectChat('${user.username}', '${user.photo || 'https://tse4.mm.bing.net/th/id/OIP.Yh_Zd0cdrtxGpEjqC0tq6QHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3'}')">
+                    <div class="profil">
+                        <img src="${user.photo || 'https://tse4.mm.bing.net/th/id/OIP.Yh_Zd0cdrtxGpEjqC0tq6QHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3'}" alt="${user.username}">
+                        <div class="nom">
+                            <p class="nom">${user.username}</p>
+                            <p class="prenom">${user.middlename || 'Pas de prénom'}</p>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <div class="date">${new Date().toLocaleDateString('fr-FR')}</div>
+                        <div class="vu_ou_non">✓✓</div>
+                    </div>
+                </div>
+            `).join('');
+            const chatList = document.querySelector('.allchat .boxs');
+            if (chatList) chatList.innerHTML = chatsHtml || '<p>Aucun chat disponible</p>';
+        }
+
+        function renderMessages(messages) {
+            bodychat.innerHTML = '';
+            if (!messages.length) {
+                bodychat.innerHTML = '<p style="padding: 20px; color: #999;">Aucun message dans cette conversation.</p>';
+                return;
+            }
+            messages.forEach((data) => {
+                const p = document.createElement('p');
+                const message = document.createElement('span');
+                const date = document.createElement('small');
+
+                p.classList.add('boxsms');
+                p.classList.add(data.username === '<%= user.username %>' ? 'sms-sent' : 'sms-received');
+                message.classList.add('sms-content');
+                date.classList.add('sms-date');
+
+                message.innerHTML = `<strong>${data.username}:</strong> ${data.content}`;
+                date.textContent = new Date(data.created_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+
+                p.appendChild(message);
+                p.appendChild(date);
+                bodychat.appendChild(p);
+            });
+            bodychat.scrollTop = bodychat.scrollHeight;
+        }
+
+        async function loadChatHistory(contact) {
+            if (!contact) return;
+            const response = await fetch(`/api/messages/${encodeURIComponent(contact)}`);
+            if (!response.ok) {
+                console.error('Erreur chargement chat', await response.text());
+                return;
+            }
+            const messages = await response.json();
+            messagesCache = messages;
+            renderMessages(messages);
+        }
+
+        function selectChat(username, photo) {
+            currentChatUser = username;
+            userNameDisplay.textContent = username;
+            userPhotoDisplay.src = photo;
+            userPhoneDisplay.href = 'tel:+243';
+
+            const isOnline = onlineList.some(u => u.username === username);
+            userStatusDisplay.textContent = isOnline ? "En ligne" : "Hors ligne";
+            userStatusDisplay.className = 'status ' + (isOnline ? 'online' : 'offline');
+
+            if (window.innerWidth < 1000) {
+                centerCol.style.display = 'none';
+                chatCol.style.display = 'flex';
+                footernav.classList.add('hide_header');
+            }
+
+            loadChatHistory(username);
+        }
+
+        socket.on('online-users', (users) => {
+            // si les utilisateurs sont seulement des noms, reconstruire les objets basés sur l'existant
+            const mappedUsers = users.map(username => {
+                const existing = onlineList.find(u => u.username === username);
+                return existing || { username, photo: 'https://tse4.mm.bing.net/th/id/OIP.Yh_Zd0cdrtxGpEjqC0tq6QHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3' };
+            });
+            renderUserList(mappedUsers);
+        });
+
+        socket.on('chat', (data) => {
+            if (!currentChatUser) return;
+            const me = '<%= user.username %>';
+            const isMine = data.username === me;
+            const isForCurrent = data.recipient === currentChatUser && isMine;
+            const isFromCurrent = data.username === currentChatUser && data.recipient === me;
+            if (isForCurrent || isFromCurrent) {
+                messagesCache.push(data);
+                renderMessages(messagesCache);
+            }
+        });
 
         // Fonction pour sélectionner un chat
         // 1. Sélectionne les éléments nécessaires
         const backBtn = document.getElementById('backToList');
         const centerCol = document.getElementById('center');
         const chatCol = document.querySelector('.chat');
-
-// 2. Modifie la fonction selectChat
-    function selectChat(username, photo) {
-        currentChatUser = username;
-        userNameDisplay.textContent = username;
-        userPhotoDisplay.src = photo;
-        userPhoneDisplay.href = 'tel:+243';
-
-        const isOnline = onlineList.some(u => u.username === username);
-        userStatusDisplay.textContent = isOnline ? "En ligne" : "Hors ligne";
-        userStatusDisplay.className = 'status ' + (isOnline ? 'online' : 'offline');
-
-        // --- LOGIQUE MOBILE ---
-        if (window.innerWidth < 1000) {
-            centerCol.style.display = 'none'; // Cacher la liste
-            chatCol.style.display = 'flex';   // Affichage du chat
-            footernav.classList.add('hide_header');
-        }
-
-    }
 
     // 3. Ajoute l'événement pour le bouton retour
     if(backBtn) {
@@ -188,9 +287,10 @@
 
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-            if (messageInput.value !== "") {
+            if (messageInput.value !== "" && currentChatUser) {
                 const data = {
                     name: '<%= user.username %>',
+                    recipient: currentChatUser,
                     message: messageInput.value,
                     date: new Date().toLocaleDateString(),
                     senderId: socket.id
@@ -198,38 +298,11 @@
                 socket.emit('chat', data);
                 messageInput.value = "";
                 messageInput.focus()
+            } else if (!currentChatUser) {
+                alert('Veuillez sélectionner un utilisateur pour chatter.');
             }
         });
-        
-        socket.on('chat', (data) => {
-            const p = document.createElement('p');
-            const message = document.createElement('span');
-            const date = document.createElement('small');
 
-            p.classList.add('boxsms');
-            p.classList.add(data.name === '<%= user.username %>' ? 'sms-sent' : 'sms-received');
-            message.classList.add('sms-content');
-            date.classList.add('sms-date');
-
-            message.innerHTML = `<strong>${data.name}:</strong> ${data.message}`;
-            date.textContent = data.date;
-
-            p.appendChild(message);
-            p.appendChild(date);
-            bodychat.appendChild(p);
-            bodychat.scrollTop = bodychat.scrollHeight;
-        });
-        nouveau_contact_btn.addEventListener('click',()=>{
-            contact_form.classList.add('contactbox_open');
-            footernav.classList.add('hide_header')
-            rgba.classList.add('closergba')
-        })
-      close_contact_form.addEventListener('click',(e)=>{
-        e.preventDefault()
-        contact_form.classList.remove('contactbox_open');
-        footernav.classList.remove('hide_header')
-      })
-        
     </script>
  <%-include('partials/footer')%>
  
