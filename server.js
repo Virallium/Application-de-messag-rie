@@ -51,7 +51,8 @@ db.run(
     console.log("la table message est créée avec succès");
   },
 );
-db.run(`
+db.run(
+  `
   CREATE TABLE IF NOT EXISTS users(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT,
@@ -60,10 +61,12 @@ db.run(`
     groupe TEXT,  
     password TEXT,
     photo TEXT 
-  )`, (err) => {
+  )`,
+  (err) => {
     if (err) console.log("Erreur table users:", err.message);
     else console.log("Table users prête.");
-});
+  },
+);
 db.run(
   `
   CREATE TABLE IF NOT EXISTS groupes(
@@ -133,10 +136,10 @@ io.on("connection", (socket) => {
   console.log("Un utilisateur s'est connecté");
 
   const broadcastOnlineUsers = () => {
-    io.emit('online-users', Array.from(userConnections.keys()));
+    io.broadcast.emit("online-users", Array.from(userConnections.keys()));
   };
 
-  socket.on('join', (username) => {
+  socket.on("join", (username) => {
     socket.username = username;
     socket.join(username);
 
@@ -147,7 +150,7 @@ io.on("connection", (socket) => {
     broadcastOnlineUsers();
   });
 
-  socket.on('disconnect', () => {
+  socket.on("disconnect", () => {
     if (!socket.username) return;
     const count = userConnections.get(socket.username) || 0;
     if (count <= 1) {
@@ -160,7 +163,7 @@ io.on("connection", (socket) => {
 
   socket.on("chat", (data) => {
     if (!data.recipient) {
-      socket.emit('error', 'Destinataire manquant');
+      socket.emit("error", "Destinataire manquant");
       return;
     }
 
@@ -170,14 +173,14 @@ io.on("connection", (socket) => {
       (err) => {
         if (err) {
           console.log(err);
-          socket.emit('error', 'Erreur lors de la sauvegarde du message');
+          socket.emit("error", "Erreur lors de la sauvegarde du message");
           return;
         }
         const messageData = {
           username: data.name,
           recipient: data.recipient,
           content: data.message,
-          created_at: new Date().toISOString()
+          created_at: new Date().toISOString(),
         };
         socket.to(data.recipient).emit("chat", messageData);
         socket.emit("chat", messageData);
@@ -186,28 +189,30 @@ io.on("connection", (socket) => {
   });
 });
 app.get("/register", (req, res) => {
-  res.render("register",{});
+  res.render("register", {});
 });
 
 app.post("/register", (req, res) => {
-  const { lastname, middlename ,number, mdpass , photo} = req.body;
+  const { lastname, middlename, number, mdpass, photo } = req.body;
 
   db.run(
     `INSERT INTO users (username,middlename, number, password, photo) VALUES (?, ?, ?, ?, ?)`,
-    [lastname, middlename ,number, mdpass, photo],
+    [lastname, middlename, number, mdpass, photo],
     (err) => {
       if (err) {
         console.error(err.message);
-        return res.send("Erreur : Ce numéro de téléphone est déjà utilisé. <a href='/register'>Retour</a>");
+        return res.send(
+          "Erreur : Ce numéro de téléphone est déjà utilisé. <a href='/register'>Retour</a>",
+        );
       }
 
-      res.redirect("/"); 
-    }
+      res.redirect("/");
+    },
   );
 });
 // 1. Route pour afficher la page (sans détruire la session immédiatement)
 app.get("/", (req, res) => {
-  if (req.session.user) return res.redirect("/index"); 
+  if (req.session.user) return res.redirect("/index");
   res.render("login");
 });
 
@@ -230,7 +235,7 @@ app.post("/login", (req, res) => {
           id: row.id,
           username: row.username,
           number: row.number,
-          role: "user"
+          role: "user",
         };
         // On attend que la session soit sauvegardée avant de rediriger
         req.session.save(() => {
@@ -239,82 +244,95 @@ app.post("/login", (req, res) => {
       } else {
         res.send("Identifiants incorrects. <a href='/'>Réessayer</a>");
       }
-    }
+    },
   );
 });
 app.get("/archive", (req, res) => {
   if (!req.session.user) return res.redirect("/");
-  
-  // Récupérer le profil complet
-  db.get("SELECT * FROM users WHERE id = ?", [req.session.user.id], (err, userProfile) => {
-    if (err || !userProfile) {
-      userProfile = req.session.user;
-    }
 
-    // Récupérer tous les messages
-    db.all(
-      "SELECT * FROM messages ORDER BY created_at DESC", 
-      [], 
-      (err, messages) => {
-        res.render("archive", { 
-          user: req.session.user,
-          userProfile: userProfile,
-          messages: messages || []
-        });
+  // Récupérer le profil complet
+  db.get(
+    "SELECT * FROM users WHERE id = ?",
+    [req.session.user.id],
+    (err, userProfile) => {
+      if (err || !userProfile) {
+        userProfile = req.session.user;
       }
-    );
-  });
+
+      // Récupérer tous les messages
+      db.all(
+        "SELECT * FROM messages ORDER BY created_at DESC",
+        [],
+        (err, messages) => {
+          res.render("archive", {
+            user: req.session.user,
+            userProfile: userProfile,
+            messages: messages || [],
+          });
+        },
+      );
+    },
+  );
 });
 
 app.get("/profil", (req, res) => {
   if (!req.session.user) return res.redirect("/");
-  
-  db.get("SELECT * FROM users WHERE id = ?", [req.session.user.id], (err, userProfile) => {
-    if (err || !userProfile) {
-      return res.render("profil", {
+
+  db.get(
+    "SELECT * FROM users WHERE id = ?",
+    [req.session.user.id],
+    (err, userProfile) => {
+      if (err || !userProfile) {
+        return res.render("profil", {
+          user: req.session.user,
+          userProfile: req.session.user,
+        });
+      }
+
+      res.render("profil", {
         user: req.session.user,
-        userProfile: req.session.user
+        userProfile: userProfile,
       });
-    }
-
-    res.render("profil", {
-      user: req.session.user,
-      userProfile: userProfile
-    });
-  });
+    },
+  );
 });
-
-
-
-
-
 
 app.get("/index", (req, res) => {
   if (!req.session.user) return res.redirect("/");
 
-    const username = req.session.user.username;
-    db.all("SELECT * FROM messages WHERE username = ? OR recipient = ? ORDER BY created_at ASC LIMIT 50", [username, username], (err, messages) => {
-  
-    if (err) {
-      console.error(err.message);
-      return res.render("index", { user: req.session.user, messages: [], onlineUsers: [] });
-    }
-
-    db.all("SELECT username, photo FROM users", [], (err, users) => {
+  const username = req.session.user.username;
+  db.all(
+    "SELECT * FROM messages WHERE username = ? OR recipient = ? ORDER BY created_at ASC LIMIT 50",
+    [username, username],
+    (err, messages) => {
       if (err) {
         console.error(err.message);
-        return res.render("index", { user: req.session.user, messages: messages, onlineUsers: [] });
+        return res.render("index", {
+          user: req.session.user,
+          messages: [],
+          onlineUsers: [],
+        });
       }
 
-      res.render("index", { 
-        user: req.session.user, 
-        messages: messages || [], 
-        onlineUsers: users || [] 
-      });
-    });
-  });
-});
+      db.all("SELECT username, photo FROM users", [], (err, users) => {
+        if (err) {
+          console.error(err.message);
+          return res.render("index", {
+            user: req.session.user,
+            messages: messages,
+            onlineUsers: [],
+          });
+        }
 
+        res.render("index", {
+          user: req.session.user,
+          messages: messages || [],
+          onlineUsers: users || [],
+        });
+      });
+    },
+  );
+});
 
 // Route pour récupérer l'historique d'un chat privé
 app.get("/api/messages/:contact", (req, res) => {
@@ -331,22 +349,23 @@ app.get("/api/messages/:contact", (req, res) => {
     (err, messages) => {
       if (err) {
         console.error(err);
-        return res.status(500).json({ error: "Erreur lors de la récupération des messages" });
+        return res
+          .status(500)
+          .json({ error: "Erreur lors de la récupération des messages" });
       }
       res.json(messages || []);
     },
   );
 });
 
-
-app.get('/logout', (req, res) => {
+app.get("/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
-      console.error('Erreur lors de la déconnexion', err);
-      return res.redirect('/index');
+      console.error("Erreur lors de la déconnexion", err);
+      return res.redirect("/index");
     }
-    res.clearCookie('connect.sid');
-    res.redirect('/');
+    res.clearCookie("connect.sid");
+    res.redirect("/");
   });
 });
 
