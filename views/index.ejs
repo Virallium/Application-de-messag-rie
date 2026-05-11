@@ -28,12 +28,6 @@
                     </a>
                 </div>
                 <div class="div">
-                    <a href="/groupe">
-                        <i class="fa-solid fa-people-line"></i>
-                        <p>Groupe</p>
-                    </a>
-                </div>
-                <div class="div">
                     <a href="/logout">
                         <i class="fa-solid fa-right-from-bracket"></i>
                         <p>Déconnexion</p>
@@ -49,7 +43,7 @@
                         <h1>Chat</h1>
                     </div>
                     <div class="input">
-                        <input type="text">
+                        <input type="text" placeholder="Rechercher un utilisateur">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </div>
                 </div>
@@ -130,7 +124,7 @@
                         <form action="" method="post" id="formEnvoy" class="d-flex align-items-center gap-2 p-3" class="form_sms">
                             <input type="text" placeholder="Ecrire" required id="Message" class="form-control flex-grow-1 rounded-pill">
                             <button type="submit" class="btn btn-primary px-4 rounded-pill flex-shrink-0">Envoyer</button>
-                            <button><i class="fa-solid fa-trash"></i></button>
+                            <button id="supprimer"><i class="fa-solid fa-trash"></i></button>
                         </form>
                         
             </div>
@@ -139,7 +133,8 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
-       const close_contact_form=document.querySelector('#closeContactForm')
+        const supprimerBtn=document.querySelector('#supprimer')
+        const close_contact_form=document.querySelector('#closeContactForm')
         const footernav=document.querySelector('header')
         const nouveau_contact_btn=document.querySelector('#aj_contact')
         const contact_form=document.querySelector('.contactbox')
