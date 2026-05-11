@@ -192,11 +192,27 @@
                         </div>
                     </div>
                     <div class="right">
-                        <div class="date"><i class="fa-solid fa-users"></i></div>
-                        <div class="vu_ou_non"></div>
+                        <button class="join-group-button" data-groupe-id="${groupe.id}" style="padding:8px 12px; border:none; background:#28a745; color:#fff; border-radius:6px; cursor:pointer;">Rejoindre</button>
                     </div>
                 </div>
             `).join('');
+        }
+
+        async function joinGroup(groupeId) {
+            try {
+                const response = await fetch(`/api/groupe/join/${groupeId}`, {
+                    method: 'POST',
+                });
+                const result = await response.json();
+                if (!response.ok) {
+                    return alert(result.error || 'Impossible de rejoindre le groupe.');
+                }
+                alert('Vous avez rejoint le groupe !');
+                searchGroups(searchInput.value.trim());
+            } catch (error) {
+                console.error(error);
+                alert('Erreur lors de la jonction du groupe.');
+            }
         }
 
         // Événement de recherche au clic sur Enter
@@ -213,15 +229,24 @@
             }
         });
 
-        // Ajouter un événement de clic sur les groupes
+        // Ajouter un événement de clic sur les boutons Rejoindre
         document.addEventListener('click', (e) => {
+            const joinButton = e.target.closest('.join-group-button');
+            if (joinButton) {
+                const groupeId = joinButton.getAttribute('data-groupe-id');
+                joinGroup(groupeId);
+                return;
+            }
+
             const groupeItem = e.target.closest('.groupe-item');
             if (groupeItem) {
                 const groupeId = groupeItem.getAttribute('data-groupe-id');
                 console.log('Groupe sélectionné:', groupeId);
-                // Vous pouvez ajouter ici la logique pour charger les messages du groupe
             }
         });
+
+        // Charger la liste des groupes immédiatement
+        searchGroups('');
 
         form.addEventListener('submit', (e) => {
             e.preventDefault();

@@ -39,7 +39,8 @@ db.run(
   CREATE TABLE IF NOT EXISTS users(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT,
-  contact TEXT,
+  contact TEXT,  
+  groupe TEXT,  
   status TEXT,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP)`,
   (err) => {
@@ -265,7 +266,33 @@ app.post("/groupe/create", (req, res) => {
     },
   );
 });
+// Route pour rejoindre un groupe existant sans connexion
+app.post("/api/groupe/join/:id", (req, res) => {
+  const groupeId = req.params.id;
 
+  db.get("SELECT * FROM groupes WHERE id = ?", [groupeId], (err, groupe) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Erreur lors de la récupération du groupe." });
+    }
+    if (!groupe) {
+      return res.status(404).json({ error: "Groupe non trouvé." });
+    }
+
+    const nouveauxMembres = (groupe.membres_groupe || 0) + 1;
+    db.run(
+      "UPDATE groupes SET membres_groupe = ? WHERE id = ?",
+      [nouveauxMembres, groupeId],
+      (updateErr) => {
+        if (updateErr) { 
+          console.error(updateErr);
+          return res.status(500).json({ error: "Impossible de rejoindre le groupe." });
+        }
+        return res.json({ success: true, groupeId, membres_groupe: nouveauxMembres });
+      },
+    );
+  });
+});
 // Route pour chercher les groupes
 app.get("/api/search-groups", (req, res) => {
   const searchQuery = req.query.q || "";
@@ -283,3 +310,4 @@ app.get("/api/search-groups", (req, res) => {
 server.listen(3000, () => {
   console.log("Le serveur est en marche");
 });
+ 
