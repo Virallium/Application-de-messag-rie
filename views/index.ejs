@@ -148,7 +148,7 @@
         let currentChatUser = null;
         let messagesCache = [];
 
-        // Rejoindre la room personnelle après connexion
+        //connection utilisateur
         socket.on('connect', () => {
             socket.emit('join', '<%= user.username %>');
         });
@@ -212,7 +212,6 @@
             });
             bodychat.scrollTop = bodychat.scrollHeight;
         }
-
         async function loadChatHistory(contact) {
             if (!contact) return;
             const response = await fetch(`/api/messages/${encodeURIComponent(contact)}`);
@@ -245,7 +244,6 @@
         }
 
         socket.on('online-users', (users) => {
-            // si les utilisateurs sont seulement des noms, reconstruire les objets basés sur l'existant
             const mappedUsers = users.map(username => {
                 const existing = onlineList.find(u => u.username === username);
                 return existing || { username, photo: 'https://tse4.mm.bing.net/th/id/OIP.Yh_Zd0cdrtxGpEjqC0tq6QHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3' };
